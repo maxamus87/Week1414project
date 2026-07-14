@@ -1,18 +1,68 @@
-# Full Stack Application Template
+# Brew Local — Coffee Shop Finder
 
-This repository is a student-friendly starter template for a full stack application using:
+## Problem Statement
 
-- React
-- Vite
-- JavaScript
-- Node.js
-- Express
-- PostgreSQL
-- Prisma ORM
-- REST API endpoints
-- Docker Compose
+It's hard to find independent, locally owned coffee shops and to know which ones are worth visiting without wading through review platforms dominated by chains and paid placement. Brew Local is a small, focused directory just for local coffee shops, where people can search, rate, review, and save their favorites.
+
+## Target User
+
+Coffee drinkers who want to discover and support independent coffee shops in their area.
+
+## Features
+
+- Browse all coffee shops with average rating and review count
+- Search shops by name and filter by city
+- Sort shops by name, rating, or newest
+- View a shop's full details and all of its reviews
+- Create an account and log in (JWT-based auth)
+- Add a new shop listing (logged in)
+- Edit or delete shops you created
+- Leave a star rating and written review on any shop (logged in)
+- Delete your own reviews
+- Favorite/unfavorite shops and view your favorites list
+- Loading, error, and empty states throughout the UI
+- Responsive, mobile-friendly layout
+
+## Technology
+
+- React + Vite (frontend)
+- React Router (client-side routing)
+- Node.js + Express (backend REST API)
+- PostgreSQL (database)
+- Prisma ORM + `@prisma/adapter-pg`
+- `bcrypt` for password hashing, `jsonwebtoken` for auth tokens
+- Docker Compose (local PostgreSQL)
 - Git and GitHub
-- Environment variables with `.env`
+
+## Database Design
+
+Four related tables:
+
+- **users** — accounts (`id`, `email` unique, `password_hash`, `name`, `created_at`)
+- **shops** — coffee shop listings, the main resource (`id`, `name`, `address`, `city`, `description`, `website`, `created_by` → `users.id`, `created_at`)
+- **reviews** — one row per review (`id`, `shop_id` → `shops.id`, `user_id` → `users.id`, `rating` 1–5, `comment`, `created_at`)
+- **favorites** — join table linking `users` to the `shops` they've saved (`id`, `user_id` → `users.id`, `shop_id` → `shops.id`, unique on `(user_id, shop_id)`)
+
+See [`docs/er-diagram.md`](docs/er-diagram.md) for the full entity relationship diagram, [`docs/proposal.md`](docs/proposal.md) for the project proposal, [`docs/api-plan.md`](docs/api-plan.md) for the endpoint plan, and [`docs/component-plan.md`](docs/component-plan.md) for the React component tree.
+
+## API Endpoints
+
+| Method | Endpoint | Purpose | Auth |
+|--------|----------|---------|------|
+| POST | `/api/auth/register` | Create an account | No |
+| POST | `/api/auth/login` | Log in, receive a JWT | No |
+| GET | `/api/auth/me` | Get the logged-in user | Yes |
+| GET | `/api/shops` | List shops (`?search=`, `?city=`, `?sort=`) | No |
+| GET | `/api/shops/:id` | Get one shop with its reviews | No |
+| POST | `/api/shops` | Create a shop | Yes |
+| PUT | `/api/shops/:id` | Update a shop you created | Yes (owner) |
+| DELETE | `/api/shops/:id` | Delete a shop you created | Yes (owner) |
+| POST | `/api/shops/:id/reviews` | Add a review | Yes |
+| PUT | `/api/reviews/:id` | Update your own review | Yes (owner) |
+| DELETE | `/api/reviews/:id` | Delete your own review | Yes (owner) |
+| GET | `/api/favorites` | List your favorited shops | Yes |
+| POST | `/api/favorites` | Favorite a shop | Yes |
+| DELETE | `/api/favorites/:shopId` | Un-favorite a shop | Yes |
 
 ## Project structure
 
@@ -21,209 +71,117 @@ This repository is a student-friendly starter template for a full stack applicat
 ├── README.md
 ├── .gitignore
 ├── docker-compose.yml
+├── docs/
+│   ├── proposal.md
+│   ├── er-diagram.md
+│   ├── api-plan.md
+│   └── component-plan.md
 └── apps/
     ├── frontend/
-    │   ├── package.json
-    │   ├── index.html
-    │   ├── vite.config.js
     │   └── src/
-    │       ├── App.jsx
-    │       ├── main.jsx
-    │       ├── styles.css
     │       ├── api/
-    │       │   └── items.js
-    │       └── components/
-    │           └── ItemList.jsx
+    │       ├── components/
+    │       ├── context/
+    │       ├── pages/
+    │       ├── App.jsx
+    │       └── main.jsx
     └── backend/
-        ├── package.json
-        ├── .env.example
-        ├── prisma.config.ts
         ├── prisma/
         │   ├── schema.prisma
-        │   ├── migrations/
         │   └── seed.js
         ├── database/
         │   ├── schema.sql
         │   └── seed.sql
         └── server/
-            ├── db/
-            │   └── prisma.js
+            ├── db/prisma.js
+            ├── middleware/auth.js
             ├── controllers/
-            │   └── itemController.js
             ├── routes/
-            │   └── items.js
             └── server.js
 ```
 
-
-
-## Example application
-
-This template uses two related tables:
-
-- `categories`
-- `items`
-
-The `items` table has a foreign key to `categories`, which gives students a simple example of relational database design.
-
-In Prisma code, the models are named `Category` and `Item`, but the actual PostgreSQL tables are lowercase: `categories` and `items`.
-
 ## Requirements
 
-Before starting, make sure you have these installed:
-
-- Node.js
-- npm
-- Docker Desktop
-- PostgreSQL client tools if you want to use `psql` commands directly
-
-
+- Node.js and npm
+- Docker Desktop (for local PostgreSQL)
+- PostgreSQL client tools if you want to use `psql` directly
 
 ## Environment variables
 
-All secret values should stay in a `.env` file.
+All secret values live in `.env` files, which are git-ignored. Never commit real credentials.
 
 1. Go to `apps/backend`
 2. Copy `.env.example` to `.env`
 3. Update the values if needed
 
-Example:
-
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:5433/backend-db?schema=public"
 PORT=3001
+JWT_SECRET=replace-with-a-long-random-string
 ```
-
-The root `.gitignore` already includes `.env` so it will not be committed.
 
 ## How to create the PostgreSQL database
 
-This project uses Docker Compose for PostgreSQL.
-
-From `apps/backend`, run:
+From `apps/backend`:
 
 ```bash
 npm run db:up
 ```
 
-This starts the PostgreSQL container defined in the root `docker-compose.yml` file.
+This starts the PostgreSQL container defined in the root `docker-compose.yml`. To stop it: `npm run db:down`. To view logs: `npm run db:logs`.
 
-Prisma 7 reads its CLI database configuration from `apps/backend/prisma.config.ts`.
-
-To stop the database:
+## Installation
 
 ```bash
-npm run db:down
+git clone <repository-url>
+cd full-stack-template
 ```
 
-To view database logs:
+### Backend setup
 
 ```bash
-npm run db:logs
-```
-
-
-
-## Backend setup
-
-Open a terminal in `apps/backend` and run:
-
-```bash
+cd apps/backend
 npm install
 cp .env.example .env
 npm run db:up
 npm run prisma:generate
 npm run prisma:migrate -- --name init
 npm run db:seed
-```
-
-Then start the backend:
-
-```bash
 npm run dev
 ```
 
-The backend will run at:
+The backend runs at `http://localhost:3001`.
 
-```text
-http://localhost:3001
-```
+Two demo accounts are created by the seed data (password for both: `password123`):
+- `maria@example.com`
+- `devon@example.com`
 
-Available example REST API endpoints:
+### Frontend setup
 
-- `GET /api/health`
-- `GET /api/categories`
-- `GET /api/items`
-- `POST /api/items`
-
-
-
-## Frontend setup
-
-Open a second terminal in `apps/frontend` and run:
+Open a second terminal:
 
 ```bash
+cd apps/frontend
 npm install
 npm run dev
 ```
 
-The frontend will run at:
+The frontend runs at `http://localhost:5173`.
 
-```text
-http://localhost:5173
-```
+## How to run `schema.sql` / `seed.sql` (raw SQL path)
 
-
-
-## How to run `schema.sql`
-
-The raw SQL files are included in `apps/backend/database` for teaching and testing.
-
-Use this option on a fresh database if you want to set up the tables manually with SQL instead of using Prisma migrations.
-
-From `apps/backend`, after your `.env` is configured and PostgreSQL is running, run:
+As an alternative to Prisma migrations, you can set up the tables manually with the raw SQL files in `apps/backend/database`. From `apps/backend`, with `.env` configured and PostgreSQL running:
 
 ```bash
 npm run sql:schema
-```
-
-This executes:
-
-```text
-database/schema.sql
-```
-
-
-
-## How to run `seed.sql`
-
-Run this after `schema.sql` if you are following the raw SQL setup path.
-
-From `apps/backend`, run:
-
-```bash
 npm run sql:seed
 ```
-
-This executes:
-
-```text
-database/seed.sql
-```
-
-
 
 ## Prisma workflow
 
-This template uses the current Prisma 7 setup:
-
-- `prisma.config.ts` configures Prisma CLI commands
-- `schema.prisma` defines the models
-- `@prisma/adapter-pg` connects Prisma Client to PostgreSQL at runtime
-- `prisma-client-js` keeps the generated client plain JavaScript-friendly for this class template
-- Prisma maps `Category` and `Item` to lowercase PostgreSQL tables so students can query `categories` and `items` directly in `psql`
-
-Useful Prisma commands from `apps/backend`:
+- `prisma.config.ts` configures the Prisma CLI
+- `schema.prisma` defines the `User`, `Shop`, `Review`, and `Favorite` models
+- `database/schema.sql` and `database/seed.sql` are a hand-written raw-SQL mirror of the same schema, for students who want to practice plain SQL
 
 ```bash
 npm run prisma:generate
@@ -233,87 +191,22 @@ npm run db:seed
 npm run db:reset
 ```
 
-
-
-### When you want to change the database schema
-
-Do not create the migration file by hand first.
-
-#### Instead:
-
-- Edit `apps/backend/prisma/schema.prisma`
-
-Run:
-
-- `npm run prisma:migrate -- --name describe-your-change`
-
-Prisma will:
-
-- compare the current schema to the last migration
-- generate the new migration SQL file for you
-- apply it to your local database
-
-Example:
-
-- If you add a new column or model:
-- `npm run prisma:migrate -- --name add-user-table`
-
-
-
-## Helpful backend scripts
-
-From `apps/backend`:
-
-```bash
-npm run dev
-npm run start
-npm run db:up
-npm run db:down
-npm run db:logs
-npm run db:psql
-npm run prisma:generate
-npm run prisma:migrate -- --name init
-npm run prisma:deploy
-npm run prisma:studio
-npm run db:seed
-npm run db:reset
-npm run sql:schema
-npm run sql:seed
-```
-
-`db:psql` requires PostgreSQL client tools to be installed on your machine.
+When you change `schema.prisma`, run `npm run prisma:migrate -- --name describe-your-change` — don't hand-write migration files.
 
 ## Git and GitHub workflow
 
-Suggested student workflow:
+1. Create a new GitHub repository from this template
+2. Clone the repository
+3. Create a new branch for your work
+4. Commit your changes regularly with meaningful messages
+5. Push your branch to GitHub
 
-1. Create a new GitHub repository from this template.
-2. Clone the repository.
-3. Create a new branch for your work.
-4. Commit your changes regularly.
-5. Push your branch to GitHub.
+## AI Usage Reflection
 
+*(Fill this section in yourself before submitting — it should describe your own experience working on this project, not be generated for you.)*
 
-
-## Suggested startup order
-
-1. In `apps/backend`, run `npm install`.
-2. In `apps/frontend`, run `npm install`.
-3. In `apps/backend`, copy `.env.example` to `.env`.
-4. In `apps/backend`, run `npm run db:up`.
-5. In `apps/backend`, run `npm run prisma:generate`.
-6. In `apps/backend`, run `npm run prisma:migrate -- --name init`.
-7. In `apps/backend`, run `npm run db:seed`.
-8. In `apps/backend`, run `npm run dev`.
-9. In `apps/frontend`, run `npm run dev`.
-
-
-
-## Notes for students
-
-- Keep your backend code inside `apps/backend`.
-- Keep your frontend code inside `apps/frontend`.
-- Keep secrets in `.env` files only.
-- Use Prisma models to represent your database tables.
-- Use REST routes in Express to connect the frontend to PostgreSQL.
-
+- **How did you use AI?**
+- **What did AI help you understand?**
+- **What incorrect or incomplete AI response did you encounter?**
+- **How did you test the AI-generated code?**
+- **What part of the project can you explain without AI assistance?**
