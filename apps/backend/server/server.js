@@ -1,7 +1,10 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import apiRoutes from "./routes/items.js";
+import authRoutes from "./routes/auth.js";
+import shopRoutes from "./routes/shops.js";
+import reviewRoutes from "./routes/reviews.js";
+import favoriteRoutes from "./routes/favorites.js";
 
 dotenv.config();
 
@@ -11,7 +14,14 @@ const port = Number(process.env.PORT) || 3001;
 app.use(cors());
 app.use(express.json());
 
-app.use("/api", apiRoutes);
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
+app.use("/api/auth", authRoutes);
+app.use("/api/shops", shopRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/favorites", favoriteRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
