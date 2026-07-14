@@ -1,43 +1,79 @@
 import "dotenv/config";
 import prisma from "../server/db/prisma.js";
 
-async function main() {
-  await prisma.item.deleteMany();
-  await prisma.category.deleteMany();
+const DEMO_PASSWORD_HASH = "$2b$10$KeE4ed5iNFH74.YvQe3TRO8mzzWPfNNZdcy2qecLXHUhtsNZp.kZK"; // password123
 
-  const categories = await prisma.category.createMany({
+async function main() {
+  await prisma.favorite.deleteMany();
+  await prisma.review.deleteMany();
+  await prisma.shop.deleteMany();
+  await prisma.user.deleteMany();
+
+  const maria = await prisma.user.create({
+    data: { email: "maria@example.com", passwordHash: DEMO_PASSWORD_HASH, name: "Maria Chen" }
+  });
+
+  const devon = await prisma.user.create({
+    data: { email: "devon@example.com", passwordHash: DEMO_PASSWORD_HASH, name: "Devon Reyes" }
+  });
+
+  const rooted = await prisma.shop.create({
+    data: {
+      name: "Rooted Coffee House",
+      address: "412 Elm St",
+      city: "Asheville",
+      description: "Cozy neighborhood roaster with single-origin pour-overs.",
+      website: "https://rootedcoffee.example.com",
+      createdBy: maria.id
+    }
+  });
+
+  const dailyGrind = await prisma.shop.create({
+    data: {
+      name: "The Daily Grind",
+      address: "89 Market Ave",
+      city: "Asheville",
+      description: "Fast, friendly espresso bar near downtown.",
+      createdBy: maria.id
+    }
+  });
+
+  const foothills = await prisma.shop.create({
+    data: {
+      name: "Foothills Roast Co.",
+      address: "215 Ridge Rd",
+      city: "Hendersonville",
+      description: "Small-batch roastery with a quiet reading nook.",
+      website: "https://foothillsroast.example.com",
+      createdBy: devon.id
+    }
+  });
+
+  const fifthAndBean = await prisma.shop.create({
+    data: {
+      name: "5th & Bean",
+      address: "5 Fifth St",
+      city: "Hendersonville",
+      description: "Family-owned shop known for its oat milk lattes.",
+      createdBy: devon.id
+    }
+  });
+
+  await prisma.review.createMany({
     data: [
-      { name: "Frontend" },
-      { name: "Backend" },
-      { name: "Database" }
+      { shopId: rooted.id, userId: devon.id, rating: 5, comment: "Best pour-over in town, super welcoming staff." },
+      { shopId: rooted.id, userId: maria.id, rating: 4, comment: "Great coffee, gets crowded on weekend mornings." },
+      { shopId: dailyGrind.id, userId: devon.id, rating: 3, comment: "Solid quick stop but seating is limited." },
+      { shopId: foothills.id, userId: maria.id, rating: 5, comment: "Quiet spot, perfect for working. Excellent light roast." },
+      { shopId: fifthAndBean.id, userId: maria.id, rating: 4, comment: "Loved the oat milk latte, friendly owners." }
     ]
   });
 
-  if (categories.count === 0) {
-    return;
-  }
-
-  const savedCategories = await prisma.category.findMany({
-    orderBy: { id: "asc" }
-  });
-
-  await prisma.item.createMany({
+  await prisma.favorite.createMany({
     data: [
-      {
-        name: "Build a React page",
-        description: "Create a component that fetches data from the Express API.",
-        categoryId: savedCategories[0].id
-      },
-      {
-        name: "Create an Express route",
-        description: "Add a REST endpoint that returns JSON from PostgreSQL.",
-        categoryId: savedCategories[1].id
-      },
-      {
-        name: "Design a table",
-        description: "Practice creating related tables with primary and foreign keys.",
-        categoryId: savedCategories[2].id
-      }
+      { userId: maria.id, shopId: foothills.id },
+      { userId: maria.id, shopId: fifthAndBean.id },
+      { userId: devon.id, shopId: rooted.id }
     ]
   });
 }

@@ -6,23 +6,60 @@ datasource db {
   provider = "postgresql"
 }
 
-model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(100)
-  createdAt DateTime @default(now()) @map("created_at")
-  items     Item[]
+model User {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique @db.VarChar(255)
+  passwordHash String     @map("password_hash") @db.VarChar(255)
+  name         String     @db.VarChar(100)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  shops        Shop[]
+  reviews      Review[]
+  favorites    Favorite[]
 
-  @@map("categories")
+  @@map("users")
 }
 
-model Item {
-  id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(100)
-  description String   @db.Text
-  categoryId  Int      @map("category_id")
-  createdAt   DateTime @default(now()) @map("created_at")
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+model Shop {
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(150)
+  address     String?    @db.VarChar(255)
+  city        String     @db.VarChar(100)
+  description String?    @db.Text
+  website     String?    @db.VarChar(255)
+  createdBy   Int        @map("created_by")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  owner       User       @relation(fields: [createdBy], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  reviews     Review[]
+  favorites   Favorite[]
 
-  @@index([categoryId])
-  @@map("items")
+  @@index([createdBy])
+  @@map("shops")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  shopId    Int      @map("shop_id")
+  userId    Int      @map("user_id")
+  rating    Int
+  comment   String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([shopId])
+  @@index([userId])
+  @@map("reviews")
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  shopId    Int      @map("shop_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([userId, shopId])
+  @@index([shopId])
+  @@map("favorites")
 }
