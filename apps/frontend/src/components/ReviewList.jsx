@@ -1,5 +1,6 @@
 import { useAuth } from "../context/AuthContext.jsx";
 import EmptyState from "./EmptyState.jsx";
+import StarRating from "./StarRating.jsx";
 
 export default function ReviewList({ reviews, onDelete }) {
   const { user } = useAuth();
@@ -14,7 +15,7 @@ export default function ReviewList({ reviews, onDelete }) {
         <li key={review.id} className="review-card">
           <div className="review-card__header">
             <strong>{review.user.name}</strong>
-            <span>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</span>
+            <StarRating rating={review.rating} size={14} />
           </div>
           {review.comment ? <p>{review.comment}</p> : null}
           {user && user.id === review.userId ? (

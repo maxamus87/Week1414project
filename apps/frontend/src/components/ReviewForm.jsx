@@ -1,15 +1,15 @@
 import { useState } from "react";
+import StarRatingInput from "./StarRatingInput.jsx";
 
 export default function ReviewForm({ onSubmit }) {
-  const [rating, setRating] = useState("5");
+  const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const numericRating = Number(rating);
 
-    if (!numericRating || numericRating < 1 || numericRating > 5) {
+    if (!rating || rating < 1 || rating > 5) {
       setError("Please choose a rating from 1 to 5.");
       return;
     }
@@ -17,8 +17,8 @@ export default function ReviewForm({ onSubmit }) {
     setError("");
 
     try {
-      await onSubmit({ rating: numericRating, comment });
-      setRating("5");
+      await onSubmit({ rating, comment });
+      setRating(5);
       setComment("");
     } catch (submitError) {
       setError(submitError.message);
@@ -29,13 +29,7 @@ export default function ReviewForm({ onSubmit }) {
     <form className="form" onSubmit={handleSubmit}>
       <label>
         Rating
-        <select value={rating} onChange={(event) => setRating(event.target.value)}>
-          <option value="5">5 - Excellent</option>
-          <option value="4">4 - Great</option>
-          <option value="3">3 - Okay</option>
-          <option value="2">2 - Not great</option>
-          <option value="1">1 - Poor</option>
-        </select>
+        <StarRatingInput value={rating} onChange={setRating} />
       </label>
 
       <label>
