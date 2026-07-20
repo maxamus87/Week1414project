@@ -464,7 +464,7 @@ button:active {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  background: rgb(32, 30, 28);
+  background: #050503;
   box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
@@ -1228,7 +1228,7 @@ button:active {
     align-items: flex-end;
     gap: 4px;
     padding: 18px 20px;
-    background: rgb(32, 30, 28);
+    background: #050503;
     box-shadow: var(--shadow-md);
   }
 
