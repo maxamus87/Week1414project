@@ -465,7 +465,6 @@ button:active {
   justify-content: space-between;
   flex-wrap: wrap;
   background: #050503;
-  box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
   z-index: 10;
