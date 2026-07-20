@@ -598,6 +598,70 @@ button:active {
   font-size: 0.75rem;
 }
 
+/* Footer */
+
+.footer {
+  margin-top: 40px;
+  background: #050503;
+  color: var(--color-text-muted);
+}
+
+.footer__inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 28px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.footer__brand {
+  max-width: 320px;
+}
+
+.footer__logo {
+  display: inline-block;
+  font-family: "Fraunces", "Georgia", serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #d4924f;
+}
+
+.footer__tagline {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer__links a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: color 0.15s ease;
+}
+
+.footer__links a:hover {
+  color: var(--color-text);
+}
+
+.footer__credit {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 28px 28px;
+  font-size: 0.78rem;
+  color: var(--color-text-faint);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 /* Filter bar */
 
 .filter-bar {

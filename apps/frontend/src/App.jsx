@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import ShopDetailPage from "./pages/ShopDetailPage.jsx";
@@ -30,6 +31,7 @@ export default function App() {
           </Routes>
         </div>
       </main>
+      <Footer />
     </>
   );
 }
