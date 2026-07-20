@@ -1,4 +1,5 @@
 import prisma from "../db/prisma.js";
+import { geocodeAddress } from "../utils/geocode.js";
 
 const SORT_OPTIONS = {
   rating: `"averageRating" DESC`,
@@ -7,7 +8,7 @@ const SORT_OPTIONS = {
 };
 
 export async function getShops(req, res, next) {
-  const { search, city, sort } = req.query;
+  const { search, city, state, sort } = req.query;
   const orderBy = SORT_OPTIONS[sort] ?? SORT_OPTIONS.name;
 
   try {
@@ -20,8 +21,11 @@ export async function getShops(req, res, next) {
         s.name,
         s.address,
         s.city,
+        s.state,
         s.description,
         s.website,
+        s.latitude,
+        s.longitude,
         s.created_by AS "createdBy",
         s.created_at AS "createdAt",
         COALESCE(AVG(r.rating), 0)::float AS "averageRating",
@@ -30,11 +34,13 @@ export async function getShops(req, res, next) {
       LEFT JOIN reviews r ON r.shop_id = s.id
       WHERE ($1::text IS NULL OR s.name ILIKE '%' || $1 || '%')
         AND ($2::text IS NULL OR s.city ILIKE '%' || $2 || '%')
+        AND ($3::text IS NULL OR s.state ILIKE '%' || $3 || '%')
       GROUP BY s.id
       ORDER BY ${orderBy}
       `,
       search ?? null,
-      city ?? null
+      city ?? null,
+      state ?? null
     );
 
     res.json({ data: shops });
@@ -74,15 +80,27 @@ export async function getShop(req, res, next) {
 }
 
 export async function createShop(req, res, next) {
-  const { name, city, address, description, website } = req.body;
+  const { name, city, state, address, description, website } = req.body;
 
-  if (!name || !city) {
-    return res.status(400).json({ message: "Name and city are required" });
+  if (!name || !city || !state) {
+    return res.status(400).json({ message: "Name, city, and state are required" });
   }
 
   try {
+    const coordinates = await geocodeAddress(address, city, state);
+
     const shop = await prisma.shop.create({
-      data: { name, city, address, description, website, createdBy: req.userId }
+      data: {
+        name,
+        city,
+        state,
+        address,
+        description,
+        website,
+        latitude: coordinates?.latitude,
+        longitude: coordinates?.longitude,
+        createdBy: req.userId
+      }
     });
 
     res.status(201).json({ message: "Shop created successfully", data: shop });
@@ -93,10 +111,10 @@ export async function createShop(req, res, next) {
 
 export async function updateShop(req, res, next) {
   const { id } = req.params;
-  const { name, city, address, description, website } = req.body;
+  const { name, city, state, address, description, website } = req.body;
 
-  if (!name || !city) {
-    return res.status(400).json({ message: "Name and city are required" });
+  if (!name || !city || !state) {
+    return res.status(400).json({ message: "Name, city, and state are required" });
   }
 
   try {
@@ -110,9 +128,23 @@ export async function updateShop(req, res, next) {
       return res.status(403).json({ message: "You can only edit shops you created" });
     }
 
+    const addressChanged = address !== shop.address || city !== shop.city || state !== shop.state;
+    const coordinates = addressChanged
+      ? await geocodeAddress(address, city, state)
+      : { latitude: shop.latitude, longitude: shop.longitude };
+
     const updated = await prisma.shop.update({
       where: { id: Number(id) },
-      data: { name, city, address, description, website }
+      data: {
+        name,
+        city,
+        state,
+        address,
+        description,
+        website,
+        latitude: coordinates?.latitude,
+        longitude: coordinates?.longitude
+      }
     });
 
     res.json({ message: "Shop updated successfully", data: updated });

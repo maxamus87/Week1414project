@@ -1,9 +1,10 @@
 import { apiRequest } from "./client.js";
 
-export function fetchShops({ search, city, sort } = {}) {
+export function fetchShops({ search, city, state, sort } = {}) {
   const params = new URLSearchParams();
   if (search) params.set("search", search);
   if (city) params.set("city", city);
+  if (state) params.set("state", state);
   if (sort) params.set("sort", sort);
 
   const query = params.toString();

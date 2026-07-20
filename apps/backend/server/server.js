@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth.js";
 import shopRoutes from "./routes/shops.js";
 import reviewRoutes from "./routes/reviews.js";
 import favoriteRoutes from "./routes/favorites.js";
+import geocodeRoutes from "./routes/geocode.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/shops", shopRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/favorites", favoriteRoutes);
+app.use("/api/geocode", geocodeRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);

@@ -21,8 +21,11 @@ erDiagram
         varchar name
         varchar address
         varchar city
+        varchar state
         text description
         varchar website
+        double latitude
+        double longitude
         int created_by FK
         timestamp created_at
     }
