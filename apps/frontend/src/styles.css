@@ -863,7 +863,7 @@ button:active {
   background: rgba(47, 44, 41, 0.88);
   box-shadow: var(--shadow-sm), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
-  animation: fade-in-up 0.35s ease both;
+  animation: fade-in-up 0.35s ease;
 }
 
 .shop-card:hover {
