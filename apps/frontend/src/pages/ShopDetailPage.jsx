@@ -2,13 +2,15 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { fetchShop, deleteShop } from "../api/shops.js";
 import { createReview, deleteReview } from "../api/reviews.js";
-import { addFavorite, fetchFavorites, removeFavorite } from "../api/favorites.js";
+import { addFavorite, fetchFavorites, removeFavorite, setVisited as setVisitedApi } from "../api/favorites.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import ReviewList from "../components/ReviewList.jsx";
 import ReviewForm from "../components/ReviewForm.jsx";
 import FavoriteButton from "../components/FavoriteButton.jsx";
-import LoadingMessage from "../components/LoadingMessage.jsx";
+import VisitedToggle from "../components/VisitedToggle.jsx";
+import ShopDetailSkeleton from "../components/ShopDetailSkeleton.jsx";
 import ErrorMessage from "../components/ErrorMessage.jsx";
+import StarRating from "../components/StarRating.jsx";
 
 export default function ShopDetailPage() {
   const { id } = useParams();
@@ -20,6 +22,8 @@ export default function ShopDetailPage() {
   const [error, setError] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteBusy, setFavoriteBusy] = useState(false);
+  const [isVisited, setIsVisited] = useState(false);
+  const [visitedBusy, setVisitedBusy] = useState(false);
 
   const loadShop = useCallback(async () => {
     setLoading(true);
@@ -43,14 +47,18 @@ export default function ShopDetailPage() {
     async function loadFavoriteStatus() {
       if (!token) {
         setIsFavorite(false);
+        setIsVisited(false);
         return;
       }
 
       try {
         const { data } = await fetchFavorites(token);
-        setIsFavorite(data.some((favorite) => favorite.shopId === Number(id)));
+        const favorite = data.find((item) => item.shopId === Number(id));
+        setIsFavorite(Boolean(favorite?.saved));
+        setIsVisited(Boolean(favorite?.visited));
       } catch {
         setIsFavorite(false);
+        setIsVisited(false);
       }
     }
 
@@ -71,6 +79,19 @@ export default function ShopDetailPage() {
       setError(favoriteError.message);
     } finally {
       setFavoriteBusy(false);
+    }
+  }
+
+  async function handleToggleVisited() {
+    setVisitedBusy(true);
+
+    try {
+      await setVisitedApi(id, !isVisited, token);
+      setIsVisited((current) => !current);
+    } catch (visitedError) {
+      setError(visitedError.message);
+    } finally {
+      setVisitedBusy(false);
     }
   }
 
@@ -106,7 +127,7 @@ export default function ShopDetailPage() {
   }
 
   if (loading) {
-    return <LoadingMessage text="Loading shop..." />;
+    return <ShopDetailSkeleton />;
   }
 
   if (error && !shop) {
@@ -124,12 +145,15 @@ export default function ShopDetailPage() {
       <div className="shop-detail__header">
         <div>
           <h1>{shop.name}</h1>
-          <p className="shop-card__city">{shop.city}{shop.address ? ` · ${shop.address}` : ""}</p>
+          <p className="shop-card__city">{shop.city}, {shop.state}{shop.address ? ` · ${shop.address}` : ""}</p>
         </div>
         {shop.averageRating ? (
-          <span className="shop-card__rating">★ {shop.averageRating.toFixed(1)} ({shop.reviewCount})</span>
+          <span className="shop-card__rating">
+            <StarRating rating={shop.averageRating} size={16} />
+            {shop.averageRating.toFixed(1)} ({shop.reviewCount})
+          </span>
         ) : (
-          <span className="shop-card__rating">No ratings yet</span>
+          <span className="shop-card__rating shop-card__rating--empty">No ratings yet</span>
         )}
       </div>
 
@@ -146,7 +170,10 @@ export default function ShopDetailPage() {
 
       <div className="shop-detail__actions">
         {user ? (
-          <FavoriteButton isFavorite={isFavorite} onToggle={handleToggleFavorite} disabled={favoriteBusy} />
+          <div className="shop-detail__save-actions">
+            <FavoriteButton isFavorite={isFavorite} onToggle={handleToggleFavorite} disabled={favoriteBusy} />
+            <VisitedToggle visited={isVisited} onToggle={handleToggleVisited} disabled={visitedBusy} />
+          </div>
         ) : (
           <p className="status">
             <Link to="/login">Log in</Link> to save favorites and leave reviews.
