@@ -868,7 +868,7 @@ button:active {
 
 .shop-card:hover {
   box-shadow: var(--shadow-glow), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  transform: translateY(-2px) scale(1.015);
+  transform: translateY(-2px) scale(1.04);
 }
 
 .shop-card__header {
