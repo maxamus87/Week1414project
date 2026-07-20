@@ -1,10 +1,10 @@
-# Project Proposal — Brew Local
+# Project Proposal — Where's My Coffee?
 
 **What is the application?**
-Brew Local is a full-stack web app for discovering local, independently owned coffee shops. Users can browse and search shops, read and leave reviews with star ratings, and save favorites to their account.
+Where's My Coffee? is a full-stack web app for discovering local, independently owned coffee shops. Users can browse and search shops, read and leave reviews with star ratings, and save favorites to their account.
 
 **What problem does it solve?**
-It's hard to find independent coffee shops (as opposed to chains) and hard to know which ones are actually good without relying on giant review platforms dominated by chains and paid placement. Brew Local is a small, focused directory just for local shops.
+It's hard to find independent coffee shops (as opposed to chains) and hard to know which ones are actually good without relying on giant review platforms dominated by chains and paid placement. Where's My Coffee? is a small, focused directory just for local shops.
 
 **Who is the target user?**
 Coffee drinkers who want to support independent, local businesses and are looking for a simple way to discover and remember their favorite (or favorite-to-try) shops.

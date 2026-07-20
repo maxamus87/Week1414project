@@ -1,8 +1,8 @@
-# Brew Local — Coffee Shop Finder
+# Where's My Coffee? — Coffee Shop Finder
 
 ## Problem Statement
 
-It's hard to find independent, locally owned coffee shops and to know which ones are worth visiting without wading through review platforms dominated by chains and paid placement. Brew Local is a small, focused directory just for local coffee shops, where people can search, rate, review, and save their favorites.
+It's hard to find independent, locally owned coffee shops and to know which ones are worth visiting without wading through review platforms dominated by chains and paid placement. Where's My Coffee? is a small, focused directory just for local coffee shops, where people can search, rate, review, and save their favorites.
 
 ## Target User
 
@@ -11,8 +11,9 @@ Coffee drinkers who want to discover and support independent coffee shops in the
 ## Features
 
 - Browse all coffee shops with average rating and review count
-- Search shops by name and filter by city
+- Search shops by name and filter by city or state
 - Sort shops by name, rating, or newest
+- Interactive map showing pins for every shop currently in view (auto-geocoded from address/city/state)
 - View a shop's full details and all of its reviews
 - Create an account and log in (JWT-based auth)
 - Add a new shop listing (logged in)
@@ -27,6 +28,7 @@ Coffee drinkers who want to discover and support independent coffee shops in the
 
 - React + Vite (frontend)
 - React Router (client-side routing)
+- Leaflet + React Leaflet (interactive map, OpenStreetMap tiles, no API key required)
 - Node.js + Express (backend REST API)
 - PostgreSQL (database)
 - Prisma ORM + `@prisma/adapter-pg`
@@ -39,7 +41,7 @@ Coffee drinkers who want to discover and support independent coffee shops in the
 Four related tables:
 
 - **users** — accounts (`id`, `email` unique, `password_hash`, `name`, `created_at`)
-- **shops** — coffee shop listings, the main resource (`id`, `name`, `address`, `city`, `description`, `website`, `created_by` → `users.id`, `created_at`)
+- **shops** — coffee shop listings, the main resource (`id`, `name`, `address`, `city`, `state`, `description`, `website`, `latitude`, `longitude`, `created_by` → `users.id`, `created_at`)
 - **reviews** — one row per review (`id`, `shop_id` → `shops.id`, `user_id` → `users.id`, `rating` 1–5, `comment`, `created_at`)
 - **favorites** — join table linking `users` to the `shops` they've saved (`id`, `user_id` → `users.id`, `shop_id` → `shops.id`, unique on `(user_id, shop_id)`)
 
@@ -52,7 +54,7 @@ See [`docs/er-diagram.md`](docs/er-diagram.md) for the full entity relationship 
 | POST | `/api/auth/register` | Create an account | No |
 | POST | `/api/auth/login` | Log in, receive a JWT | No |
 | GET | `/api/auth/me` | Get the logged-in user | Yes |
-| GET | `/api/shops` | List shops (`?search=`, `?city=`, `?sort=`) | No |
+| GET | `/api/shops` | List shops (`?search=`, `?city=`, `?state=`, `?sort=`) | No |
 | GET | `/api/shops/:id` | Get one shop with its reviews | No |
 | POST | `/api/shops` | Create a shop | Yes |
 | PUT | `/api/shops/:id` | Update a shop you created | Yes (owner) |
