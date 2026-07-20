@@ -1,12 +1,12 @@
-export default function FavoriteButton({ isFavorite, onToggle, disabled }) {
+export default function VisitedToggle({ visited, onToggle, disabled }) {
   return (
     <button
       type="button"
-      className={`favorite-button${isFavorite ? " favorite-button--active" : ""}`}
+      className={`visited-toggle${visited ? " visited-toggle--active" : ""}`}
       onClick={onToggle}
       disabled={disabled}
     >
-      {isFavorite ? (
+      {visited ? (
         <svg className="icon-pop" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
           <path
             d="M4 12l5 5 11-11"
@@ -18,7 +18,7 @@ export default function FavoriteButton({ isFavorite, onToggle, disabled }) {
           />
         </svg>
       ) : null}
-      {isFavorite ? "Favorited" : "Add to favorites"}
+      {visited ? "Visited" : "Mark as visited"}
     </button>
   );
 }

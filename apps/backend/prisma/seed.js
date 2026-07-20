@@ -22,8 +22,11 @@ async function main() {
       name: "Rooted Coffee House",
       address: "412 Elm St",
       city: "Asheville",
+      state: "North Carolina",
       description: "Cozy neighborhood roaster with single-origin pour-overs.",
       website: "https://rootedcoffee.example.com",
+      latitude: 35.5951,
+      longitude: -82.5515,
       createdBy: maria.id
     }
   });
@@ -33,7 +36,10 @@ async function main() {
       name: "The Daily Grind",
       address: "89 Market Ave",
       city: "Asheville",
+      state: "North Carolina",
       description: "Fast, friendly espresso bar near downtown.",
+      latitude: 35.5978,
+      longitude: -82.554,
       createdBy: maria.id
     }
   });
@@ -43,8 +49,11 @@ async function main() {
       name: "Foothills Roast Co.",
       address: "215 Ridge Rd",
       city: "Hendersonville",
+      state: "North Carolina",
       description: "Small-batch roastery with a quiet reading nook.",
       website: "https://foothillsroast.example.com",
+      latitude: 35.3187,
+      longitude: -82.461,
       createdBy: devon.id
     }
   });
@@ -54,7 +63,10 @@ async function main() {
       name: "5th & Bean",
       address: "5 Fifth St",
       city: "Hendersonville",
+      state: "North Carolina",
       description: "Family-owned shop known for its oat milk lattes.",
+      latitude: 35.321,
+      longitude: -82.4585,
       createdBy: devon.id
     }
   });
@@ -71,9 +83,9 @@ async function main() {
 
   await prisma.favorite.createMany({
     data: [
-      { userId: maria.id, shopId: foothills.id },
-      { userId: maria.id, shopId: fifthAndBean.id },
-      { userId: devon.id, shopId: rooted.id }
+      { userId: maria.id, shopId: foothills.id, saved: true, visited: true },
+      { userId: maria.id, shopId: fifthAndBean.id, saved: true, visited: false },
+      { userId: devon.id, shopId: rooted.id, saved: true, visited: true }
     ]
   });
 }

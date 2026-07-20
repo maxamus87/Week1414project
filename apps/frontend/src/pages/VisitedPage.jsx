@@ -8,7 +8,7 @@ import ShopListSkeleton from "../components/ShopListSkeleton.jsx";
 import ErrorMessage from "../components/ErrorMessage.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 
-export default function FavoritesPage() {
+export default function VisitedPage() {
   const { token } = useAuth();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,16 +36,10 @@ export default function FavoritesPage() {
     try {
       if (favorite.saved) {
         await removeFavorite(shopId, token);
-        setFavorites((current) =>
-          favorite.visited
-            ? current.map((item) => (item.shopId === shopId ? { ...item, saved: false } : item))
-            : current.filter((item) => item.shopId !== shopId)
-        );
+        setFavorites((current) => current.map((item) => (item.shopId === shopId ? { ...item, saved: false } : item)));
       } else {
         await addFavorite(shopId, token);
-        setFavorites((current) =>
-          current.map((item) => (item.shopId === shopId ? { ...item, saved: true } : item))
-        );
+        setFavorites((current) => current.map((item) => (item.shopId === shopId ? { ...item, saved: true } : item)));
       }
     } catch (toggleError) {
       setError(toggleError.message);
@@ -61,7 +55,9 @@ export default function FavoritesPage() {
       const nextVisited = !favorite.visited;
       await setVisitedApi(shopId, nextVisited, token);
       setFavorites((current) =>
-        current.map((item) => (item.shopId === shopId ? { ...item, visited: nextVisited } : item))
+        nextVisited || favorite.saved
+          ? current.map((item) => (item.shopId === shopId ? { ...item, visited: nextVisited } : item))
+          : current.filter((item) => item.shopId !== shopId)
       );
     } catch (toggleError) {
       setError(toggleError.message);
@@ -73,7 +69,7 @@ export default function FavoritesPage() {
   if (loading) {
     return (
       <section className="panel panel--section-opacity">
-        <h1>Your favorite shops</h1>
+        <h1>Shops you've visited</h1>
         <ShopListSkeleton />
       </section>
     );
@@ -83,13 +79,13 @@ export default function FavoritesPage() {
     return <ErrorMessage text={error} />;
   }
 
-  const saved = favorites.filter((favorite) => favorite.saved);
+  const visited = favorites.filter((favorite) => favorite.visited);
 
-  if (saved.length === 0) {
-    return <EmptyState text="You haven't favorited any shops yet." />;
+  if (visited.length === 0) {
+    return <EmptyState text="You haven't marked any shops as visited yet." />;
   }
 
-  const shops = saved.map((favorite) => favorite.shop);
+  const shops = visited.map((favorite) => favorite.shop);
 
   function renderExtra(shop) {
     const favorite = favorites.find((item) => item.shopId === shop.id);
@@ -113,7 +109,7 @@ export default function FavoritesPage() {
 
   return (
     <section className="panel panel--section-opacity">
-      <h1>Your favorite shops</h1>
+      <h1>Shops you've visited</h1>
       <ShopList shops={shops} renderExtra={renderExtra} />
     </section>
   );
