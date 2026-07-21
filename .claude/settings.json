@@ -69,7 +69,12 @@
       "Bash(curl -s --ssl-no-revoke --max-time 30 \"https://week1414project-hjma8a8rf-maxamus-s-projects.vercel.app/\" -o /tmp/index.html -w \"%{http_code}\\\\n\")",
       "Bash(curl -s --ssl-no-revoke --max-time 30 -D - \"https://week1414project-hjma8a8rf-maxamus-s-projects.vercel.app/\" -o /dev/null)",
       "Bash(curl -s --ssl-no-revoke --max-time 30 \"https://wheresmycoffee.vercel.app/\" -o /tmp/index.html -w \"%{http_code}\\\\n\")",
-      "Bash(curl -s --ssl-no-revoke --max-time 30 \"https://wheresmycoffee.vercel.app/assets/index-D0ZeOuQ8.css\" -o /tmp/style.css -w \"%{http_code}\\\\n\")"
+      "Bash(curl -s --ssl-no-revoke --max-time 30 \"https://wheresmycoffee.vercel.app/assets/index-D0ZeOuQ8.css\" -o /tmp/style.css -w \"%{http_code}\\\\n\")",
+      "Bash(xargs grep -l \"datasource\")",
+      "Bash(xargs grep -l \"PrismaConfig\\\\b\")",
+      "Bash(node --check server/app.js)",
+      "Bash(node --check api/index.js)",
+      "Bash(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(48\\).toString\\('hex'\\)\\)\")"
     ]
   }
 }
