@@ -91,7 +91,15 @@ button:active {
   outline-offset: 2px;
 }
 
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .page {
+  flex: 1;
+  width: 100%;
   max-width: 960px;
   margin: 0 auto;
   padding: 56px 28px 80px;

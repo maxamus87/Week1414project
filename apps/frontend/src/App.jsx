@@ -15,7 +15,7 @@ export default function App() {
   const location = useLocation();
 
   return (
-    <>
+    <div className="app-shell">
       <Navbar />
       <main className="page">
         <div className="page-transition" key={location.pathname}>
@@ -32,6 +32,6 @@ export default function App() {
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
