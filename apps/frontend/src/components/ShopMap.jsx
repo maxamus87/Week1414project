@@ -1,43 +1,69 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import {
+  AdvancedMarker,
+  APIProvider,
+  InfoWindow,
+  Map,
+  Pin,
+  useAdvancedMarkerRef,
+  useMap
+} from "@vis.gl/react-google-maps";
 import EmptyState from "./EmptyState.jsx";
 
-const pinIcon = L.divIcon({
-  className: "shop-pin",
-  html: `<span class="marker-drop-inner"><svg viewBox="0 0 24 32" width="30" height="38">
-      <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20c0-6.6-5.4-12-12-12z" fill="currentColor" />
-      <circle cx="12" cy="12" r="5" fill="var(--color-surface, #fff)" />
-    </svg></span>`,
-  iconSize: [30, 38],
-  iconAnchor: [15, 38],
-  popupAnchor: [0, -34]
-});
-
-const youAreHereIcon = L.divIcon({
-  className: "you-are-here-pin",
-  html: `<span class="marker-drop-inner"><svg viewBox="0 0 24 24" width="22" height="22">
-      <circle cx="12" cy="12" r="9" fill="currentColor" fill-opacity="0.25" />
-      <circle cx="12" cy="12" r="5" fill="currentColor" stroke="var(--color-surface, #fff)" stroke-width="2" />
-    </svg></span>`,
-  iconSize: [22, 22],
-  iconAnchor: [11, 11]
-});
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function FitToPoints({ points }) {
   const map = useMap();
 
   useEffect(() => {
+    if (!map) {
+      return;
+    }
+
     if (points.length === 1) {
-      map.setView([points[0].latitude, points[0].longitude], 13);
+      map.setCenter({ lat: points[0].latitude, lng: points[0].longitude });
+      map.setZoom(13);
     } else if (points.length > 1) {
-      map.fitBounds(points.map((point) => [point.latitude, point.longitude]), { padding: [40, 40] });
+      const bounds = new window.google.maps.LatLngBounds();
+      points.forEach((point) => bounds.extend({ lat: point.latitude, lng: point.longitude }));
+      map.fitBounds(bounds, 40);
     }
   }, [points, map]);
 
   return null;
+}
+
+function ShopMarker({ shop }) {
+  const [markerRef, marker] = useAdvancedMarkerRef();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <AdvancedMarker
+        ref={markerRef}
+        position={{ lat: shop.latitude, lng: shop.longitude }}
+        onClick={() => setOpen(true)}
+      >
+        <Pin background="var(--color-accent)" borderColor="var(--color-accent-contrast)" glyphColor="var(--color-accent-contrast)" />
+      </AdvancedMarker>
+      {open ? (
+        <InfoWindow anchor={marker} onCloseClick={() => setOpen(false)}>
+          <strong>{shop.name}</strong>
+          <br />
+          {shop.city}
+          {shop.distance != null ? (
+            <>
+              <br />
+              {shop.distance.toFixed(1)} mi away
+            </>
+          ) : null}
+          <br />
+          <Link to={`/shops/${shop.id}`}>View shop</Link>
+        </InfoWindow>
+      ) : null}
+    </>
+  );
 }
 
 export default function ShopMap({ shops, userLocation }) {
@@ -54,40 +80,26 @@ export default function ShopMap({ shops, userLocation }) {
 
   return (
     <div className="shop-map">
-      <MapContainer
-        center={[boundsPoints[0].latitude, boundsPoints[0].longitude]}
-        zoom={13}
-        scrollWheelZoom={false}
-        style={{ height: "100%", width: "100%" }}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <FitToPoints points={boundsPoints} />
-        {userLocation ? (
-          <Marker position={[userLocation.latitude, userLocation.longitude]} icon={youAreHereIcon}>
-            <Popup>You are here</Popup>
-          </Marker>
-        ) : null}
-        {shopPoints.map((shop) => (
-          <Marker key={shop.id} position={[shop.latitude, shop.longitude]} icon={pinIcon}>
-            <Popup>
-              <strong>{shop.name}</strong>
-              <br />
-              {shop.city}
-              {shop.distance != null ? (
-                <>
-                  <br />
-                  {shop.distance.toFixed(1)} mi away
-                </>
-              ) : null}
-              <br />
-              <Link to={`/shops/${shop.id}`}>View shop</Link>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+      <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
+        <Map
+          mapId="shop-map"
+          defaultCenter={{ lat: boundsPoints[0].latitude, lng: boundsPoints[0].longitude }}
+          defaultZoom={13}
+          scrollwheel={false}
+          disableDefaultUI
+          zoomControl
+        >
+          <FitToPoints points={boundsPoints} />
+          {userLocation ? (
+            <AdvancedMarker position={{ lat: userLocation.latitude, lng: userLocation.longitude }}>
+              <Pin background="var(--color-surface)" borderColor="var(--color-accent)" glyphColor="var(--color-accent)" />
+            </AdvancedMarker>
+          ) : null}
+          {shopPoints.map((shop) => (
+            <ShopMarker key={shop.id} shop={shop} />
+          ))}
+        </Map>
+      </APIProvider>
     </div>
   );
 }

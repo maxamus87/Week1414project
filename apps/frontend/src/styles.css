@@ -883,42 +883,18 @@ button:active {
   box-shadow: none;
 }
 
-.shop-pin {
-  color: var(--color-rating);
-}
-
-.you-are-here-pin {
-  color: var(--color-danger);
-}
-
-.marker-drop-inner {
-  display: block;
-  animation: marker-drop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
-@keyframes marker-drop {
-  from {
-    opacity: 0;
-    transform: translateY(-16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.leaflet-popup-content-wrapper {
+.shop-map .gm-style-iw-c {
   background: var(--color-surface);
   color: var(--color-text);
   border-radius: var(--radius-sm);
 }
 
-.leaflet-popup-content a {
+.shop-map .gm-style-iw-c a {
   color: var(--color-rating);
   font-weight: 600;
 }
 
-.leaflet-popup-tip {
+.shop-map .gm-style-iw-t::after {
   background: var(--color-surface);
 }
 
