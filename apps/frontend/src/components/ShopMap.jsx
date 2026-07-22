@@ -42,10 +42,7 @@ function ShopMarker({ shop, isOpen, onSelect, onClose }) {
       <AdvancedMarker
         ref={markerRef}
         position={{ lat: shop.latitude, lng: shop.longitude }}
-        onClick={(event) => {
-          event.stop();
-          onSelect(shop.id);
-        }}
+        onClick={() => onSelect(shop.id)}
       >
         <Pin background="var(--color-accent)" borderColor="var(--color-accent-contrast)" glyphColor="var(--color-accent-contrast)" />
       </AdvancedMarker>
