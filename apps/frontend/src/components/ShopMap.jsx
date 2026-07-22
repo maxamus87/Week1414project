@@ -34,28 +34,26 @@ function FitToPoints({ points }) {
   return null;
 }
 
-function ShopMarker({ shop }) {
+function ShopMarker({ shop, isOpen, onSelect, onClose }) {
   const [markerRef, marker] = useAdvancedMarkerRef();
-  const [open, setOpen] = useState(false);
 
   return (
     <>
       <AdvancedMarker
         ref={markerRef}
         position={{ lat: shop.latitude, lng: shop.longitude }}
-        onClick={() => setOpen(true)}
+        onClick={(event) => {
+          event.stop();
+          onSelect(shop.id);
+        }}
       >
         <Pin background="var(--color-accent)" borderColor="var(--color-accent-contrast)" glyphColor="var(--color-accent-contrast)" />
       </AdvancedMarker>
-      {open ? (
-        <InfoWindow anchor={marker} onCloseClick={() => setOpen(false)} headerDisabled maxWidth={200}>
+      {isOpen ? (
+        <InfoWindow anchor={marker} onCloseClick={onClose} headerDisabled maxWidth={200}>
           <div className="shop-map-popup">
-            <div className="shop-map-popup__header">
-              <strong>{shop.name}</strong>
-              <button type="button" className="shop-map-popup__close" onClick={() => setOpen(false)} aria-label="Close">
-                &times;
-              </button>
-            </div>
+            <strong>{shop.name}</strong>
+            <br />
             {shop.city}
             {shop.distance != null ? (
               <>
@@ -73,6 +71,7 @@ function ShopMarker({ shop }) {
 }
 
 export default function ShopMap({ shops, userLocation }) {
+  const [activeShopId, setActiveShopId] = useState(null);
   const shopPoints = shops.filter((shop) => shop.latitude != null && shop.longitude != null);
   const boundsPoints = userLocation ? [...shopPoints, userLocation] : shopPoints;
 
@@ -94,6 +93,7 @@ export default function ShopMap({ shops, userLocation }) {
           scrollwheel={false}
           disableDefaultUI
           zoomControl
+          onClick={() => setActiveShopId(null)}
         >
           <FitToPoints points={boundsPoints} />
           {userLocation ? (
@@ -102,7 +102,13 @@ export default function ShopMap({ shops, userLocation }) {
             </AdvancedMarker>
           ) : null}
           {shopPoints.map((shop) => (
-            <ShopMarker key={shop.id} shop={shop} />
+            <ShopMarker
+              key={shop.id}
+              shop={shop}
+              isOpen={activeShopId === shop.id}
+              onSelect={setActiveShopId}
+              onClose={() => setActiveShopId(null)}
+            />
           ))}
         </Map>
       </APIProvider>
