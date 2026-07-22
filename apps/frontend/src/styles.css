@@ -901,18 +901,13 @@ button:active {
 }
 
 .shop-map-popup {
-  padding: 4px 8px 12px;
+  padding: 6px 12px 12px;
   line-height: 1.5;
 }
 
 .shop-map-popup a {
   color: var(--color-rating);
   font-weight: 600;
-}
-
-
-.shop-map-popup__close:hover {
-  color: var(--color-text);
 }
 
 /* Shop list & cards */
