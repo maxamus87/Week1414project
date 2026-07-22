@@ -901,8 +901,7 @@ button:active {
 }
 
 .shop-map-popup {
-  position: relative;
-  padding: 16px 18px 12px 8px;
+  padding: 4px 8px 12px;
   line-height: 1.5;
 }
 
@@ -911,17 +910,23 @@ button:active {
   font-weight: 600;
 }
 
+.shop-map-popup__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 2px;
+}
+
 .shop-map-popup__close {
-  position: absolute;
-  top: 0;
-  right: 0;
+  flex-shrink: 0;
   border: none;
   background: none;
   color: var(--color-text-muted);
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
-  padding: 2px;
+  padding: 0;
 }
 
 .shop-map-popup__close:hover {

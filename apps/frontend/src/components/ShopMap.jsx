@@ -50,11 +50,12 @@ function ShopMarker({ shop }) {
       {open ? (
         <InfoWindow anchor={marker} onCloseClick={() => setOpen(false)} headerDisabled maxWidth={200}>
           <div className="shop-map-popup">
-            <button type="button" className="shop-map-popup__close" onClick={() => setOpen(false)} aria-label="Close">
-              &times;
-            </button>
-            <strong>{shop.name}</strong>
-            <br />
+            <div className="shop-map-popup__header">
+              <strong>{shop.name}</strong>
+              <button type="button" className="shop-map-popup__close" onClick={() => setOpen(false)} aria-label="Close">
+                &times;
+              </button>
+            </div>
             {shop.city}
             {shop.distance != null ? (
               <>
