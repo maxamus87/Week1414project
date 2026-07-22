@@ -130,6 +130,10 @@ button:active {
   font-weight: 800;
 }
 
+.panel__title--accent {
+  color: var(--color-accent);
+}
+
 @keyframes fade-in-up {
   from {
     opacity: 0;

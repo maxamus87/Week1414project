@@ -14,7 +14,7 @@ export default function NewShopPage() {
 
   return (
     <section className="panel">
-      <h1>Add a coffee shop</h1>
+      <h1 className="panel__title--accent">Add a coffee shop</h1>
       <ShopForm onSubmit={handleSubmit} submitLabel="Create shop" />
     </section>
   );
