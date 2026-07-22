@@ -5,3 +5,5 @@ dist/
 coverage/
 apps/backend/prisma/generated/
 apps/backend/dev.db
+.vercel
+.env*
