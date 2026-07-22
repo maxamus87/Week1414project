@@ -7,7 +7,7 @@
     "dev": "node --watch server/server.js",
     "start": "node server/server.js",
     "postinstall": "prisma generate",
-    "vercel-build": "prisma generate && prisma migrate deploy",
+    "vercel-build": "prisma generate && prisma migrate deploy && node prisma/seed.js",
     "db:up": "docker compose -f ../../docker-compose.yml up -d postgres",
     "db:down": "docker compose -f ../../docker-compose.yml down",
     "db:logs": "docker compose -f ../../docker-compose.yml logs -f postgres",
