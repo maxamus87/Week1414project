@@ -29,6 +29,7 @@ model Shop {
   website     String?    @db.VarChar(255)
   latitude    Float?
   longitude   Float?
+  placeId     String?    @unique @map("place_id") @db.VarChar(255)
   createdBy   Int        @map("created_by")
   createdAt   DateTime   @default(now()) @map("created_at")
   owner       User       @relation(fields: [createdBy], references: [id], onDelete: Restrict, onUpdate: Cascade)

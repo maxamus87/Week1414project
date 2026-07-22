@@ -75,7 +75,8 @@
       "Bash(node --check server/app.js)",
       "Bash(node --check api/index.js)",
       "Bash(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(48\\).toString\\('hex'\\)\\)\")",
-      "Bash(npx vercel *)"
+      "Bash(npx vercel *)",
+      "WebSearch"
     ]
   }
 }

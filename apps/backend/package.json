@@ -18,6 +18,7 @@
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "db:seed": "prisma db seed",
+    "import:places": "node prisma/importGooglePlaces.js",
     "db:reset": "prisma migrate reset --force && prisma db seed",
     "sql:schema": "psql \"$DATABASE_URL\" -f database/schema.sql",
     "sql:seed": "psql \"$DATABASE_URL\" -f database/seed.sql"
