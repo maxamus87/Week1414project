@@ -888,6 +888,7 @@ button:active {
   color: var(--color-text);
   border-radius: var(--radius-sm);
   padding: 12px;
+  overflow: visible !important;
 }
 
 .shop-map .gm-style-iw-d {
