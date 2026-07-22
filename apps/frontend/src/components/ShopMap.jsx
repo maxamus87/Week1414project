@@ -48,7 +48,7 @@ function ShopMarker({ shop }) {
         <Pin background="var(--color-accent)" borderColor="var(--color-accent-contrast)" glyphColor="var(--color-accent-contrast)" />
       </AdvancedMarker>
       {open ? (
-        <InfoWindow anchor={marker} onCloseClick={() => setOpen(false)}>
+        <InfoWindow anchor={marker} onCloseClick={() => setOpen(false)} headerDisabled>
           <div className="shop-map-popup">
             <strong>{shop.name}</strong>
             <br />
