@@ -49,17 +49,19 @@ function ShopMarker({ shop }) {
       </AdvancedMarker>
       {open ? (
         <InfoWindow anchor={marker} onCloseClick={() => setOpen(false)}>
-          <strong>{shop.name}</strong>
-          <br />
-          {shop.city}
-          {shop.distance != null ? (
-            <>
-              <br />
-              {shop.distance.toFixed(1)} mi away
-            </>
-          ) : null}
-          <br />
-          <Link to={`/shops/${shop.id}`}>View shop</Link>
+          <div className="shop-map-popup">
+            <strong>{shop.name}</strong>
+            <br />
+            {shop.city}
+            {shop.distance != null ? (
+              <>
+                <br />
+                {shop.distance.toFixed(1)} mi away
+              </>
+            ) : null}
+            <br />
+            <Link to={`/shops/${shop.id}`}>View shop</Link>
+          </div>
         </InfoWindow>
       ) : null}
     </>

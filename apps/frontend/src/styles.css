@@ -887,15 +887,36 @@ button:active {
   background: var(--color-surface);
   color: var(--color-text);
   border-radius: var(--radius-sm);
+  padding: 12px;
 }
 
-.shop-map .gm-style-iw-c a {
-  color: var(--color-rating);
-  font-weight: 600;
+.shop-map .gm-style-iw-d {
+  overflow: visible !important;
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
 .shop-map .gm-style-iw-t::after {
   background: var(--color-surface);
+}
+
+.shop-map .gm-ui-hover-effect {
+  top: 4px !important;
+  right: 4px !important;
+}
+
+.shop-map .gm-ui-hover-effect span {
+  background-color: var(--color-text) !important;
+}
+
+.shop-map-popup {
+  width: 180px;
+  line-height: 1.5;
+}
+
+.shop-map-popup a {
+  color: var(--color-rating);
+  font-weight: 600;
 }
 
 /* Shop list & cards */
