@@ -4,7 +4,8 @@ import prisma from "../server/db/prisma.js";
 const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 const SEARCH_QUERY = process.env.PLACES_IMPORT_QUERY || "coffee shop in Central Ohio";
 const IMPORT_USER_EMAIL = "places-import@system.local";
-const FIELD_MASK = "places.id,places.displayName,places.formattedAddress,places.location,places.addressComponents";
+const FIELD_MASK =
+  "places.id,places.displayName,places.formattedAddress,places.location,places.addressComponents,places.websiteUri";
 const MAX_PAGES = 3;
 const PAGE_TOKEN_DELAY_MS = 2_000;
 
@@ -92,6 +93,7 @@ async function main() {
       address: place.formattedAddress || null,
       city,
       state,
+      website: place.websiteUri || null,
       latitude: place.location?.latitude ?? null,
       longitude: place.location?.longitude ?? null
     };
