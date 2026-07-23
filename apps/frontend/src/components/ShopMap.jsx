@@ -91,7 +91,7 @@ export default function ShopMap({ shops, userLocation }) {
           mapId="shop-map"
           defaultCenter={{ lat: boundsPoints[0].latitude, lng: boundsPoints[0].longitude }}
           defaultZoom={13}
-          scrollwheel={false}
+          scrollwheel
           disableDefaultUI
           zoomControl
           onClick={() => setActiveShopId(null)}
