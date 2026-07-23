@@ -4,6 +4,23 @@ import EmptyState from "./EmptyState.jsx";
 
 const PAGE_SIZE = 6;
 const SWIPE_THRESHOLD_PX = 50;
+const MOBILE_QUERY = "(max-width: 640px)";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(MOBILE_QUERY).matches
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(MOBILE_QUERY);
+    const handleChange = (event) => setIsMobile(event.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  return isMobile;
+}
 
 function chunk(items, size) {
   const pages = [];
@@ -17,6 +34,7 @@ export default function ShopCarousel({ shops, renderExtra }) {
   const [pageIndex, setPageIndex] = useState(0);
   const dragState = useRef(null);
   const shopsKey = shops.map((shop) => shop.id).join(",");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setPageIndex(0);
@@ -24,6 +42,16 @@ export default function ShopCarousel({ shops, renderExtra }) {
 
   if (shops.length === 0) {
     return <EmptyState text="No coffee shops match your search yet." />;
+  }
+
+  if (isMobile) {
+    return (
+      <ul className="shop-list shop-carousel__mobile-scroll">
+        {shops.map((shop, index) => (
+          <ShopCard key={shop.id} shop={shop} index={index} extra={renderExtra ? renderExtra(shop) : null} />
+        ))}
+      </ul>
+    );
   }
 
   const pages = chunk(shops, PAGE_SIZE);

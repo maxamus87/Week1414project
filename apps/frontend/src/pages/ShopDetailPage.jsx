@@ -159,7 +159,7 @@ export default function ShopDetailPage() {
 
       {shop.description ? <p>{shop.description}</p> : null}
       {shop.website ? (
-        <p>
+        <p className="shop-detail__website">
           <a href={shop.website} target="_blank" rel="noreferrer">
             {shop.website}
           </a>

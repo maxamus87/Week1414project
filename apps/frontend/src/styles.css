@@ -294,6 +294,13 @@ button:active {
   background: var(--color-accent);
 }
 
+.shop-carousel__mobile-scroll {
+  grid-template-columns: 1fr;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
 .section-band__inner {
   max-width: 960px;
   margin: 0 auto;
@@ -1178,6 +1185,11 @@ button:active {
 
 .shop-detail__header h1 {
   margin: 0;
+}
+
+.shop-detail__website a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .shop-detail__actions {
