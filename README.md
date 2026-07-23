@@ -13,27 +13,31 @@ Coffee drinkers who want to discover and support independent coffee shops in the
 - Browse all coffee shops with average rating and review count
 - Search shops by name and filter by city or state
 - Sort shops by name, rating, or newest
-- Interactive map showing pins for every shop currently in view (auto-geocoded from address/city/state)
+- Shop listings shown 6-at-a-time in a swipeable carousel (desktop) or a scrollable list (mobile)
+- Interactive Google Map showing pins for every shop currently in view (auto-geocoded from address/city/state), with click-to-preview popups
 - View a shop's full details and all of its reviews
 - Create an account and log in (JWT-based auth)
-- Add a new shop listing (logged in)
+- Add a new shop listing (logged in) — visible to every visitor, not just the creator
 - Edit or delete shops you created
 - Leave a star rating and written review on any shop (logged in)
 - Delete your own reviews
 - Favorite/unfavorite shops and view your favorites list
 - Loading, error, and empty states throughout the UI
 - Responsive, mobile-friendly layout
+- One-off scripts to bulk-import real coffee shops from the Google Places API
 
 ## Technology
 
 - React + Vite (frontend)
 - React Router (client-side routing)
-- Leaflet + React Leaflet (interactive map, OpenStreetMap tiles, no API key required)
+- Google Maps JavaScript API via `@vis.gl/react-google-maps` (interactive map)
+- Google Places API (New) for bulk-importing real shop data
 - Node.js + Express (backend REST API)
-- PostgreSQL (database)
+- PostgreSQL (database, hosted via Vercel-managed Prisma Postgres in production)
 - Prisma ORM + `@prisma/adapter-pg`
 - `bcrypt` for password hashing, `jsonwebtoken` for auth tokens
 - Docker Compose (local PostgreSQL)
+- Vercel (hosting for both the frontend and the backend, deployed as separate projects)
 - Git and GitHub
 
 ## Database Design
@@ -41,7 +45,7 @@ Coffee drinkers who want to discover and support independent coffee shops in the
 Four related tables:
 
 - **users** — accounts (`id`, `email` unique, `password_hash`, `name`, `created_at`)
-- **shops** — coffee shop listings, the main resource (`id`, `name`, `address`, `city`, `state`, `description`, `website`, `latitude`, `longitude`, `created_by` → `users.id`, `created_at`)
+- **shops** — coffee shop listings, the main resource (`id`, `name`, `address`, `city`, `state`, `description`, `website`, `latitude`, `longitude`, `place_id` unique — set when imported from Google Places, `created_by` → `users.id`, `created_at`)
 - **reviews** — one row per review (`id`, `shop_id` → `shops.id`, `user_id` → `users.id`, `rating` 1–5, `comment`, `created_at`)
 - **favorites** — join table linking `users` to the `shops` they've saved (`id`, `user_id` → `users.id`, `shop_id` → `shops.id`, unique on `(user_id, shop_id)`)
 
@@ -88,9 +92,14 @@ See [`docs/er-diagram.md`](docs/er-diagram.md) for the full entity relationship 
     │       ├── App.jsx
     │       └── main.jsx
     └── backend/
+        ├── api/
+        │   └── index.js       # Vercel serverless entry point
+        ├── vercel.json
         ├── prisma/
         │   ├── schema.prisma
-        │   └── seed.js
+        │   ├── seed.js
+        │   ├── importGooglePlaces.js       # one-off: bulk-import shops from Google Places
+        │   └── removeNorthCarolinaShops.js # one-off: cleanup script example
         ├── database/
         │   ├── schema.sql
         │   └── seed.sql
@@ -120,6 +129,15 @@ All secret values live in `.env` files, which are git-ignored. Never commit real
 DATABASE_URL="postgresql://postgres:postgres@localhost:5433/backend-db?schema=public"
 PORT=3001
 JWT_SECRET=replace-with-a-long-random-string
+# Only needed if you run prisma/importGooglePlaces.js:
+GOOGLE_PLACES_API_KEY=your-google-places-api-key
+```
+
+The frontend also has its own `.env` (copy `apps/frontend/.env.example`):
+
+```env
+VITE_API_URL=http://localhost:3001/api
+VITE_GOOGLE_MAPS_API_KEY=your-google-maps-javascript-api-key
 ```
 
 ## How to create the PostgreSQL database
@@ -194,6 +212,17 @@ npm run db:reset
 ```
 
 When you change `schema.prisma`, run `npm run prisma:migrate -- --name describe-your-change` — don't hand-write migration files.
+
+To bulk-import real coffee shops from Google Places (requires `GOOGLE_PLACES_API_KEY` in `.env`): `npm run import:places`. It upserts by the shop's Google `place_id`, so it's safe to re-run without creating duplicates.
+
+## Deployment
+
+The app is deployed as two separate Vercel projects connected to this same repository:
+
+- **Backend** (`apps/backend`, Root Directory set in Vercel project settings): the Express app is wrapped as a serverless function in `api/index.js`, with `vercel.json` rewriting all requests to it. Database is a Vercel-managed Prisma Postgres instance. The `vercel-build` script (`prisma generate && prisma migrate deploy`) applies any pending Prisma migrations automatically on every deploy.
+- **Frontend** (`apps/frontend`, Root Directory set in Vercel project settings): a standard Vite build, with `VITE_API_URL` pointed at the backend's production domain and `VITE_GOOGLE_MAPS_API_KEY` set for the map.
+
+To bulk-import real shop data or run a one-off data migration in production (where secrets can't be read locally because they're marked Sensitive in Vercel), temporarily append the script to the backend's `vercel-build` command, push, confirm it ran in the build logs, then revert the `vercel-build` script back to just `prisma generate && prisma migrate deploy`.
 
 ## Git and GitHub workflow
 
