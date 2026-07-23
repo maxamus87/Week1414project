@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   AdvancedMarker,
@@ -15,11 +15,15 @@ const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function FitToPoints({ points }) {
   const map = useMap();
+  const lastKeyRef = useRef(null);
+  const key = points.map((point) => `${point.latitude},${point.longitude}`).join("|");
 
   useEffect(() => {
-    if (!map) {
+    if (!map || key === lastKeyRef.current) {
       return;
     }
+
+    lastKeyRef.current = key;
 
     if (points.length === 1) {
       map.setCenter({ lat: points[0].latitude, lng: points[0].longitude });
@@ -29,7 +33,7 @@ function FitToPoints({ points }) {
       points.forEach((point) => bounds.extend({ lat: point.latitude, lng: point.longitude }));
       map.fitBounds(bounds, 40);
     }
-  }, [points, map]);
+  }, [key, map, points]);
 
   return null;
 }
