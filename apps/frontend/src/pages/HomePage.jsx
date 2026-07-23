@@ -28,6 +28,7 @@ export default function HomePage() {
   const [favoriteBusyShopId, setFavoriteBusyShopId] = useState(null);
 
   const [showMap, setShowMap] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(9);
 
   useEffect(() => {
     let cancelled = false;
@@ -59,6 +60,10 @@ export default function HomePage() {
       clearTimeout(timeoutId);
     };
   }, [filters]);
+
+  useEffect(() => {
+    setVisibleCount(9);
+  }, [filters, userLocation, radiusMiles]);
 
   useEffect(() => {
     let cancelled = false;
@@ -228,6 +233,9 @@ export default function HomePage() {
       ? [...radiusFilteredShops].sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
       : radiusFilteredShops;
 
+  const visibleShops = displayedShops.slice(0, visibleCount);
+  const hasMoreShops = displayedShops.length > visibleCount;
+
   return (
     <>
       <section className={`section-band${showMap ? " section-band--flush" : ""}`}>
@@ -288,7 +296,16 @@ export default function HomePage() {
       {!loading && !error ? (
         <section className="section-band">
           <div className="section-band__inner">
-            <ShopList shops={displayedShops} renderExtra={renderShopExtra} />
+            <ShopList shops={visibleShops} renderExtra={renderShopExtra} />
+            {hasMoreShops ? (
+              <button
+                type="button"
+                className="show-more-button"
+                onClick={() => setVisibleCount((current) => current + 9)}
+              >
+                Show more
+              </button>
+            ) : null}
           </div>
         </section>
       ) : null}

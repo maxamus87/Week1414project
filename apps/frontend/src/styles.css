@@ -228,6 +228,25 @@ button:active {
   box-shadow: var(--shadow-glow);
 }
 
+.show-more-button {
+  display: block;
+  margin: 24px auto 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+
+.show-more-button:hover {
+  box-shadow: var(--shadow-glow);
+}
+
 .section-band__inner {
   max-width: 960px;
   margin: 0 auto;
