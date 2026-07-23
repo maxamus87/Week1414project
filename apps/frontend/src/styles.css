@@ -425,6 +425,14 @@ button:active {
   transition: box-shadow 0.15s ease;
 }
 
+.form input::placeholder,
+.form textarea::placeholder,
+.filter-bar input::placeholder,
+.near-me__field input::placeholder {
+  color: #6b5a42;
+  opacity: 1;
+}
+
 .form input:hover,
 .form select:hover,
 .form textarea:hover {
