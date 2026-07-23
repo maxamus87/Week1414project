@@ -4,7 +4,7 @@ import { geocodeAddress } from "../api/geocode.js";
 import { addFavorite, fetchFavorites, removeFavorite, setVisited as setVisitedApi } from "../api/favorites.js";
 import { milesBetween } from "../utils/distance.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import ShopList from "../components/ShopList.jsx";
+import ShopCarousel from "../components/ShopCarousel.jsx";
 import ShopMap from "../components/ShopMap.jsx";
 import SearchFilterBar from "../components/SearchFilterBar.jsx";
 import ShopListSkeleton from "../components/ShopListSkeleton.jsx";
@@ -28,7 +28,6 @@ export default function HomePage() {
   const [favoriteBusyShopId, setFavoriteBusyShopId] = useState(null);
 
   const [showMap, setShowMap] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(9);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,10 +59,6 @@ export default function HomePage() {
       clearTimeout(timeoutId);
     };
   }, [filters]);
-
-  useEffect(() => {
-    setVisibleCount(9);
-  }, [filters, userLocation, radiusMiles]);
 
   useEffect(() => {
     let cancelled = false;
@@ -233,8 +228,6 @@ export default function HomePage() {
       ? [...radiusFilteredShops].sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
       : radiusFilteredShops;
 
-  const visibleShops = displayedShops.slice(0, visibleCount);
-  const hasMoreShops = displayedShops.length > visibleCount;
 
   return (
     <>
@@ -296,16 +289,7 @@ export default function HomePage() {
       {!loading && !error ? (
         <section className="section-band">
           <div className="section-band__inner">
-            <ShopList shops={visibleShops} renderExtra={renderShopExtra} />
-            {hasMoreShops ? (
-              <button
-                type="button"
-                className="show-more-button"
-                onClick={() => setVisibleCount((current) => current + 9)}
-              >
-                Show more
-              </button>
-            ) : null}
+            <ShopCarousel shops={displayedShops} renderExtra={renderShopExtra} />
           </div>
         </section>
       ) : null}
