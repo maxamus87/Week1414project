@@ -1369,11 +1369,11 @@ button:active {
     position: absolute;
     top: 100%;
     right: 0;
-    width: 33.33%;
+    width: min(70%, 280px);
     flex-direction: column;
     align-items: flex-end;
     gap: 4px;
-    padding: 18px 48px 18px 32px;
+    padding: 18px 32px;
     background: #050503;
     box-shadow: var(--shadow-md);
   }
