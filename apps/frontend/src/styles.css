@@ -255,8 +255,8 @@ button:active {
 
 .shop-carousel__viewport {
   overflow: hidden;
-  padding: 8px 0;
-  margin: -8px 0;
+  padding: 8px;
+  margin: -8px;
   touch-action: pan-y;
 }
 
