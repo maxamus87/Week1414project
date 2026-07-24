@@ -264,13 +264,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {showMap ? (
-        <section className="section-band section-band--full">
-          <div className="section-band__inner">
-            <ShopMap shops={displayedShops} userLocation={userLocation} />
-          </div>
-        </section>
-      ) : null}
+      <div className={`map-reveal${showMap ? " map-reveal--open" : ""}`}>
+        <div className="map-reveal__inner">
+          <section className="section-band section-band--full">
+            <div className="section-band__inner">
+              <ShopMap shops={displayedShops} userLocation={userLocation} />
+            </div>
+          </section>
+        </div>
+      </div>
 
       {error ? (
         <section className="section-band">

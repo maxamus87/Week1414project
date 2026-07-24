@@ -204,8 +204,33 @@ button:active {
 .section-band--full .shop-map {
   height: 300px;
   margin: 0;
-  border-radius: 0;
   box-shadow: 0 0 0 3px var(--color-accent);
+}
+
+.map-reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s ease;
+}
+
+.map-reveal--open {
+  grid-template-rows: 1fr;
+}
+
+.map-reveal__inner {
+  overflow: hidden;
+}
+
+.map-reveal__inner .section-band {
+  transform: scale(0.85);
+  opacity: 0;
+  transform-origin: center;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.map-reveal--open .map-reveal__inner .section-band {
+  transform: scale(1);
+  opacity: 1;
 }
 
 .map-toggle {
