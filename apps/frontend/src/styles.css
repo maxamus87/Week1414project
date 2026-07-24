@@ -218,7 +218,8 @@ button:active {
 }
 
 .map-reveal__inner {
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: hidden;
 }
 
 .map-reveal__inner .section-band {
@@ -254,7 +255,8 @@ button:active {
 }
 
 .shop-carousel__viewport {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   touch-action: pan-y;
 }
 
