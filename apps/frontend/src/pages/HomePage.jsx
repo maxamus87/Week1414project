@@ -265,8 +265,10 @@ export default function HomePage() {
       </section>
 
       {showMap ? (
-        <section className="section-band section-band--full">
-          <ShopMap shops={displayedShops} userLocation={userLocation} />
+        <section className="section-band">
+          <div className="section-band__inner">
+            <ShopMap shops={displayedShops} userLocation={userLocation} />
+          </div>
         </section>
       ) : null}
 
