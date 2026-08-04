@@ -46,27 +46,32 @@ const MAP_REVEAL_MS = 400;
 function FocusOnShop({ focusShop, shops }) {
   const map = useMap();
   const lastTokenRef = useRef(null);
+  const shopsRef = useRef(shops);
+  shopsRef.current = shops;
 
   useEffect(() => {
     if (!map || !focusShop || focusShop.token === lastTokenRef.current) {
       return;
     }
 
-    const shop = shops.find((candidate) => candidate.id === focusShop.id);
-    if (!shop) {
-      return;
-    }
-
     lastTokenRef.current = focusShop.token;
 
     const timer = setTimeout(() => {
+      const shop = shopsRef.current.find((candidate) => candidate.id === focusShop.id);
+      if (!shop) {
+        return;
+      }
+
       window.google.maps.event.trigger(map, "resize");
       map.panTo({ lat: shop.latitude, lng: shop.longitude });
       map.setZoom(16);
     }, MAP_REVEAL_MS + 50);
 
     return () => clearTimeout(timer);
-  }, [focusShop, map, shops]);
+    // shops is read from shopsRef, not a dependency here on purpose: it gets
+    // a new array identity on every ShopMap render, which would otherwise
+    // cancel the pending timer before it fires.
+  }, [focusShop, map]);
 
   return null;
 }
