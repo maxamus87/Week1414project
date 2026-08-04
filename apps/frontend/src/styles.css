@@ -175,12 +175,23 @@ button:active {
 }
 
 .section-band {
+  position: relative;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   background: rgba(45, 42, 39, 0.42);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   margin-bottom: 32px;
   animation: fade-in-up 0.35s ease both;
+}
+
+.section-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: none;
 }
 
 .section-band:last-child {
@@ -200,6 +211,10 @@ button:active {
 .section-band--full {
   background: none;
   box-shadow: none;
+}
+
+.section-band--full::before {
+  content: none;
 }
 
 .section-band--full .shop-map {
@@ -288,13 +303,8 @@ button:active {
   max-width: 960px;
   margin: 0 auto;
   padding: 36px 28px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.section-band--full .section-band__inner {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  position: relative;
+  z-index: 1;
 }
 
 .section-band__inner--tight-bottom {
