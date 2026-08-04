@@ -235,15 +235,13 @@ button:active {
 
 .map-toggle {
   display: block;
-  margin-left: auto;
-  margin-top: 0;
   border: 0;
   border-radius: var(--radius-sm);
-  padding: 8px 14px;
+  padding: 5px 10px;
   background: var(--color-accent);
   color: var(--color-accent-contrast);
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   box-shadow: var(--shadow-md);
   cursor: pointer;
   transition: box-shadow 0.15s ease;
@@ -251,6 +249,18 @@ button:active {
 
 .map-toggle:hover {
   box-shadow: var(--shadow-glow);
+}
+
+.map-shell {
+  position: relative;
+  min-height: 80px;
+}
+
+.map-toggle--floating {
+  position: absolute;
+  top: 48px;
+  right: 40px;
+  z-index: 5;
 }
 
 .shop-carousel__viewport {

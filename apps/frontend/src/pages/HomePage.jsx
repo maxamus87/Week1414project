@@ -243,18 +243,23 @@ export default function HomePage() {
 
   return (
     <>
-      <div className={`map-reveal${showMap ? " map-reveal--open" : ""}`}>
-        <div className="map-reveal__inner">
-          <section className="section-band section-band--full">
-            <div className="section-band__inner">
-              <ShopMap shops={displayedShops} userLocation={userLocation} focusShop={focusShop} />
-            </div>
-          </section>
+      <div className="map-shell">
+        <div className={`map-reveal${showMap ? " map-reveal--open" : ""}`}>
+          <div className="map-reveal__inner">
+            <section className="section-band section-band--full">
+              <div className="section-band__inner">
+                <ShopMap shops={displayedShops} userLocation={userLocation} focusShop={focusShop} />
+              </div>
+            </section>
+          </div>
         </div>
+        <button type="button" className="map-toggle map-toggle--floating" onClick={() => setShowMap((current) => !current)}>
+          {showMap ? "Hide map" : "Show map"}
+        </button>
       </div>
 
       <section className="section-band">
-        <div className="section-band__inner home-hero section-band__inner--tight-bottom section-band__inner--pad-top-sm">
+        <div className="section-band__inner home-hero section-band__inner--tight-bottom section-band__inner--pad-top-sm section-band__inner--pad-bottom-sm">
           <div className="home-hero__title">
             <h1>Find your local coffee shop</h1>
             <p>Search, filter, and rate independent coffee shops near you.</p>
@@ -280,11 +285,6 @@ export default function HomePage() {
               randomShopDisabled={mappableShops.length === 0}
             />
           </div>
-        </div>
-        <div className="section-band__inner section-band__inner--tight-top section-band__inner--pad-bottom-xs">
-          <button type="button" className="map-toggle" onClick={() => setShowMap((current) => !current)}>
-            {showMap ? "Hide map" : "Show map"}
-          </button>
         </div>
       </section>
 
