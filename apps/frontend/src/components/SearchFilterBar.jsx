@@ -92,19 +92,6 @@ export default function SearchFilterBar({
         <span>Or</span>
       </div>
 
-      <button
-        type="button"
-        className="random-shop-btn"
-        onClick={onRandomShop}
-        disabled={randomShopDisabled}
-      >
-        🎲 Surprise me
-      </button>
-
-      <div className="search-divider">
-        <span>Or</span>
-      </div>
-
       <form className="filter-bar" onSubmit={(event) => event.preventDefault()}>
         <label>
           Search by name
@@ -146,6 +133,15 @@ export default function SearchFilterBar({
           </select>
         </label>
       </form>
+
+      <button
+        type="button"
+        className="random-shop-btn"
+        onClick={onRandomShop}
+        disabled={randomShopDisabled}
+      >
+        🎲 Surprise me
+      </button>
     </>
   );
 }
