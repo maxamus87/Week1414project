@@ -243,6 +243,15 @@ export default function HomePage() {
 
   return (
     <>
+      <section className="section-band">
+        <div className="section-band__inner section-band__inner--center section-band__inner--pad-top-sm section-band__inner--pad-bottom-sm">
+          <div className="home-hero-solo">
+            <h1>Find your local coffee shop</h1>
+            <p>Search, filter, and rate independent coffee shops near you.</p>
+          </div>
+        </div>
+      </section>
+
       <div className="map-shell">
         <div className={`map-reveal${showMap ? " map-reveal--open" : ""}`}>
           <div className="map-reveal__inner">
@@ -259,32 +268,26 @@ export default function HomePage() {
       </div>
 
       <section className="section-band">
-        <div className="section-band__inner home-hero section-band__inner--tight-bottom section-band__inner--pad-top-sm section-band__inner--pad-bottom-sm">
-          <div className="home-hero__title">
-            <h1>Find your local coffee shop</h1>
-            <p>Search, filter, and rate independent coffee shops near you.</p>
-          </div>
-          <div className="home-hero__search">
-            <SearchFilterBar
-              filters={filters}
-              onChange={setFilters}
-              onFindNear={handleFindNear}
-              onUseLocation={handleUseLocation}
-              locationLabel={
-                userLocation
-                  ? `Showing distance from ${userLocation.label}${radiusMiles ? ` · within ${radiusMiles} mi` : ""}`
-                  : ""
-              }
-              locationBusy={locationBusy}
-              locationError={locationError}
-              onClearLocation={handleClearLocation}
-              hasLocation={Boolean(userLocation)}
-              radiusMiles={radiusMiles}
-              onRadiusChange={setRadiusMiles}
-              onRandomShop={handleRandomShop}
-              randomShopDisabled={mappableShops.length === 0}
-            />
-          </div>
+        <div className="section-band__inner">
+          <SearchFilterBar
+            filters={filters}
+            onChange={setFilters}
+            onFindNear={handleFindNear}
+            onUseLocation={handleUseLocation}
+            locationLabel={
+              userLocation
+                ? `Showing distance from ${userLocation.label}${radiusMiles ? ` · within ${radiusMiles} mi` : ""}`
+                : ""
+            }
+            locationBusy={locationBusy}
+            locationError={locationError}
+            onClearLocation={handleClearLocation}
+            hasLocation={Boolean(userLocation)}
+            radiusMiles={radiusMiles}
+            onRadiusChange={setRadiusMiles}
+            onRandomShop={handleRandomShop}
+            randomShopDisabled={mappableShops.length === 0}
+          />
         </div>
       </section>
 

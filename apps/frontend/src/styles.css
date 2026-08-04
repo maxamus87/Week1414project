@@ -373,45 +373,22 @@ button:active {
   color: var(--color-accent);
 }
 
-.home-hero {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.home-hero__title {
+.home-hero-solo {
+  display: inline-block;
   text-align: center;
   border: 1px solid var(--color-accent);
   border-radius: var(--radius-md);
-  padding: 16px 20px;
+  padding: 14px 24px;
+  max-width: 480px;
 }
 
-.home-hero__search {
-  min-width: 0;
+.home-hero-solo h1 {
+  font-size: 1.5rem;
 }
 
-@media (min-width: 641px) {
-  .home-hero {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 48px;
-  }
-
-  .home-hero__title {
-    text-align: left;
-    flex: 0 0 auto;
-    max-width: 380px;
-  }
-
-  .home-hero__title h1 {
-    font-size: 3rem;
-  }
-
-  .home-hero__search {
-    flex: 1 1 420px;
-    max-width: 540px;
-  }
+.home-hero-solo p {
+  margin: 0;
+  font-size: 0.9rem;
 }
 
 .section-band__inner--center {
