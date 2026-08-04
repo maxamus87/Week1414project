@@ -361,6 +361,10 @@ button:active {
   padding-top: 56px;
 }
 
+.section-band__inner--pad-top-xs {
+  padding-top: 28px;
+}
+
 .section-band__inner--tight-top {
   padding-top: 0;
 }
