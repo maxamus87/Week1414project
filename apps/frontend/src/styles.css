@@ -189,8 +189,8 @@ button:active {
   position: absolute;
   inset: 0;
   z-index: 0;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
   pointer-events: none;
 }
 
