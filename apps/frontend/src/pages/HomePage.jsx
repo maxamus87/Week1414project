@@ -250,8 +250,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section-band section-band--full">
-        <div className="section-band__inner">
+      <section className="section-band section-band--full section-band--flush">
+        <div className="section-band__inner section-band__inner--pad-bottom-xs">
           <ShopMap shops={displayedShops} userLocation={userLocation} focusShop={focusShop} />
         </div>
       </section>
