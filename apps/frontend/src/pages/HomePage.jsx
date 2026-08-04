@@ -27,7 +27,7 @@ export default function HomePage() {
   const [favoritesByShopId, setFavoritesByShopId] = useState({});
   const [favoriteBusyShopId, setFavoriteBusyShopId] = useState(null);
 
-  const [showMap, setShowMap] = useState(false);
+  const [showMap, setShowMap] = useState(true);
   const [focusShop, setFocusShop] = useState(null);
 
   useEffect(() => {
@@ -243,7 +243,17 @@ export default function HomePage() {
 
   return (
     <>
-      <section className={`section-band${showMap ? " section-band--flush" : ""}`}>
+      <div className={`map-reveal${showMap ? " map-reveal--open" : ""}`}>
+        <div className="map-reveal__inner">
+          <section className="section-band section-band--full">
+            <div className="section-band__inner">
+              <ShopMap shops={displayedShops} userLocation={userLocation} focusShop={focusShop} />
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <section className="section-band">
         <div className="section-band__inner home-hero section-band__inner--tight-bottom section-band__inner--pad-top-sm">
           <div className="home-hero__title">
             <h1>Find your local coffee shop</h1>
@@ -277,16 +287,6 @@ export default function HomePage() {
           </button>
         </div>
       </section>
-
-      <div className={`map-reveal${showMap ? " map-reveal--open" : ""}`}>
-        <div className="map-reveal__inner">
-          <section className="section-band section-band--full">
-            <div className="section-band__inner">
-              <ShopMap shops={displayedShops} userLocation={userLocation} focusShop={focusShop} />
-            </div>
-          </section>
-        </div>
-      </div>
 
       {error ? (
         <section className="section-band">
