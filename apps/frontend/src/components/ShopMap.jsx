@@ -38,6 +38,28 @@ function FitToPoints({ points }) {
   return null;
 }
 
+function FocusOnShop({ focusShop, shops }) {
+  const map = useMap();
+  const lastTokenRef = useRef(null);
+
+  useEffect(() => {
+    if (!map || !focusShop || focusShop.token === lastTokenRef.current) {
+      return;
+    }
+
+    const shop = shops.find((candidate) => candidate.id === focusShop.id);
+    if (!shop) {
+      return;
+    }
+
+    lastTokenRef.current = focusShop.token;
+    map.panTo({ lat: shop.latitude, lng: shop.longitude });
+    map.setZoom(16);
+  }, [focusShop, map, shops]);
+
+  return null;
+}
+
 function ShopMarker({ shop, isOpen, onSelect, onClose }) {
   const [markerRef, marker] = useAdvancedMarkerRef();
 
@@ -71,10 +93,16 @@ function ShopMarker({ shop, isOpen, onSelect, onClose }) {
   );
 }
 
-export default function ShopMap({ shops, userLocation }) {
+export default function ShopMap({ shops, userLocation, focusShop }) {
   const [activeShopId, setActiveShopId] = useState(null);
   const shopPoints = shops.filter((shop) => shop.latitude != null && shop.longitude != null);
   const boundsPoints = userLocation ? [...shopPoints, userLocation] : shopPoints;
+
+  useEffect(() => {
+    if (focusShop) {
+      setActiveShopId(focusShop.id);
+    }
+  }, [focusShop]);
 
   if (boundsPoints.length === 0) {
     return (
@@ -97,6 +125,7 @@ export default function ShopMap({ shops, userLocation }) {
           onClick={() => setActiveShopId(null)}
         >
           <FitToPoints points={boundsPoints} />
+          <FocusOnShop focusShop={focusShop} shops={shopPoints} />
           {userLocation ? (
             <AdvancedMarker position={{ lat: userLocation.latitude, lng: userLocation.longitude }}>
               <Pin background="var(--color-surface)" borderColor="var(--color-accent)" glyphColor="var(--color-accent)" />

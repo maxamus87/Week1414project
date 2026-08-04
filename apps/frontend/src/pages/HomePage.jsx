@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { fetchShops } from "../api/shops.js";
 import { geocodeAddress } from "../api/geocode.js";
 import { addFavorite, fetchFavorites, removeFavorite, setVisited as setVisitedApi } from "../api/favorites.js";
@@ -15,7 +14,6 @@ import VisitedToggle from "../components/VisitedToggle.jsx";
 
 export default function HomePage() {
   const { token } = useAuth();
-  const navigate = useNavigate();
   const [shops, setShops] = useState([]);
   const [filters, setFilters] = useState({ search: "", city: "", state: "", sort: "name" });
   const [loading, setLoading] = useState(true);
@@ -30,6 +28,7 @@ export default function HomePage() {
   const [favoriteBusyShopId, setFavoriteBusyShopId] = useState(null);
 
   const [showMap, setShowMap] = useState(false);
+  const [focusShop, setFocusShop] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -230,12 +229,15 @@ export default function HomePage() {
       ? [...radiusFilteredShops].sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
       : radiusFilteredShops;
 
+  const mappableShops = displayedShops.filter((shop) => shop.latitude != null && shop.longitude != null);
+
   function handleRandomShop() {
-    if (displayedShops.length === 0) {
+    if (mappableShops.length === 0) {
       return;
     }
-    const shop = displayedShops[Math.floor(Math.random() * displayedShops.length)];
-    navigate(`/shops/${shop.id}`);
+    const shop = mappableShops[Math.floor(Math.random() * mappableShops.length)];
+    setShowMap(true);
+    setFocusShop({ id: shop.id, token: Math.random() });
   }
 
 
@@ -265,7 +267,7 @@ export default function HomePage() {
               radiusMiles={radiusMiles}
               onRadiusChange={setRadiusMiles}
               onRandomShop={handleRandomShop}
-              randomShopDisabled={displayedShops.length === 0}
+              randomShopDisabled={mappableShops.length === 0}
             />
           </div>
         </div>
@@ -280,7 +282,7 @@ export default function HomePage() {
         <div className="map-reveal__inner">
           <section className="section-band section-band--full">
             <div className="section-band__inner">
-              <ShopMap shops={displayedShops} userLocation={userLocation} />
+              <ShopMap shops={displayedShops} userLocation={userLocation} focusShop={focusShop} />
             </div>
           </section>
         </div>
