@@ -38,11 +38,6 @@ function FitToPoints({ points }) {
   return null;
 }
 
-// Matches the .map-reveal CSS transition duration in styles.css, so the
-// container has finished expanding (and Google Maps has a real size to
-// pan/zoom against) before we move the camera.
-const MAP_REVEAL_MS = 400;
-
 function FocusOnShop({ focusShop, shops }) {
   const map = useMap();
   const lastTokenRef = useRef(null);
@@ -56,21 +51,13 @@ function FocusOnShop({ focusShop, shops }) {
 
     lastTokenRef.current = focusShop.token;
 
-    const timer = setTimeout(() => {
-      const shop = shopsRef.current.find((candidate) => candidate.id === focusShop.id);
-      if (!shop) {
-        return;
-      }
+    const shop = shopsRef.current.find((candidate) => candidate.id === focusShop.id);
+    if (!shop) {
+      return;
+    }
 
-      window.google.maps.event.trigger(map, "resize");
-      map.panTo({ lat: shop.latitude, lng: shop.longitude });
-      map.setZoom(16);
-    }, MAP_REVEAL_MS + 50);
-
-    return () => clearTimeout(timer);
-    // shops is read from shopsRef, not a dependency here on purpose: it gets
-    // a new array identity on every ShopMap render, which would otherwise
-    // cancel the pending timer before it fires.
+    map.panTo({ lat: shop.latitude, lng: shop.longitude });
+    map.setZoom(16);
   }, [focusShop, map]);
 
   return null;

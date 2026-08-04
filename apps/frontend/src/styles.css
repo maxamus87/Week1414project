@@ -207,62 +207,6 @@ button:active {
   box-shadow: inset 0 0 0 3px var(--color-accent);
 }
 
-.map-reveal {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.4s ease;
-}
-
-.map-reveal--open {
-  grid-template-rows: 1fr;
-}
-
-.map-reveal__inner {
-  overflow: hidden;
-}
-
-.map-reveal__inner .section-band {
-  transform: scale(0.85);
-  opacity: 0;
-  transform-origin: center;
-  transition: transform 0.4s ease, opacity 0.4s ease;
-}
-
-.map-reveal--open .map-reveal__inner .section-band {
-  transform: scale(1);
-  opacity: 1;
-}
-
-.map-toggle {
-  display: block;
-  border: 0;
-  border-radius: var(--radius-sm);
-  padding: 5px 10px;
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
-  font-weight: 700;
-  font-size: 0.7rem;
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  transition: box-shadow 0.15s ease;
-}
-
-.map-toggle:hover {
-  box-shadow: var(--shadow-glow);
-}
-
-.map-shell {
-  position: relative;
-  min-height: 80px;
-}
-
-.map-toggle--floating {
-  position: absolute;
-  top: 48px;
-  right: 40px;
-  z-index: 5;
-}
-
 .shop-carousel__viewport {
   overflow: hidden;
   padding: 32px 0;

@@ -27,7 +27,6 @@ export default function HomePage() {
   const [favoritesByShopId, setFavoritesByShopId] = useState({});
   const [favoriteBusyShopId, setFavoriteBusyShopId] = useState(null);
 
-  const [showMap, setShowMap] = useState(true);
   const [focusShop, setFocusShop] = useState(null);
 
   useEffect(() => {
@@ -236,7 +235,6 @@ export default function HomePage() {
       return;
     }
     const shop = mappableShops[Math.floor(Math.random() * mappableShops.length)];
-    setShowMap(true);
     setFocusShop({ id: shop.id, token: Math.random() });
   }
 
@@ -252,20 +250,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="map-shell">
-        <div className={`map-reveal${showMap ? " map-reveal--open" : ""}`}>
-          <div className="map-reveal__inner">
-            <section className="section-band section-band--full">
-              <div className="section-band__inner">
-                <ShopMap shops={displayedShops} userLocation={userLocation} focusShop={focusShop} />
-              </div>
-            </section>
-          </div>
+      <section className="section-band section-band--full">
+        <div className="section-band__inner">
+          <ShopMap shops={displayedShops} userLocation={userLocation} focusShop={focusShop} />
         </div>
-        <button type="button" className="map-toggle map-toggle--floating" onClick={() => setShowMap((current) => !current)}>
-          {showMap ? "Hide map" : "Show map"}
-        </button>
-      </div>
+      </section>
 
       <section className="section-band">
         <div className="section-band__inner">
