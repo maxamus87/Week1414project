@@ -33,10 +33,9 @@ Coffee drinkers who want to discover and support independent coffee shops in the
 - Google Maps JavaScript API via `@vis.gl/react-google-maps` (interactive map)
 - Google Places API (New) for bulk-importing real shop data
 - Node.js + Express (backend REST API)
-- PostgreSQL (database, hosted via Vercel-managed Prisma Postgres in production)
+- PostgreSQL (database, hosted on Supabase)
 - Prisma ORM + `@prisma/adapter-pg`
 - `bcrypt` for password hashing, `jsonwebtoken` for auth tokens
-- Docker Compose (local PostgreSQL)
 - Vercel (hosting for both the frontend and the backend, deployed as separate projects)
 - Git and GitHub
 
@@ -76,7 +75,6 @@ See [`docs/er-diagram.md`](docs/er-diagram.md) for the full entity relationship 
 .
 ├── README.md
 ├── .gitignore
-├── docker-compose.yml
 ├── docs/
 │   ├── proposal.md
 │   ├── er-diagram.md
@@ -114,8 +112,8 @@ See [`docs/er-diagram.md`](docs/er-diagram.md) for the full entity relationship 
 ## Requirements
 
 - Node.js and npm
-- Docker Desktop (for local PostgreSQL)
-- PostgreSQL client tools if you want to use `psql` directly
+- A [Supabase](https://supabase.com) account (free tier is fine) for the PostgreSQL database
+- PostgreSQL client tools if you want to use `psql` directly (optional)
 
 ## Environment variables
 
@@ -123,15 +121,18 @@ All secret values live in `.env` files, which are git-ignored. Never commit real
 
 1. Go to `apps/backend`
 2. Copy `.env.example` to `.env`
-3. Update the values if needed
+3. Fill in the values from your Supabase project (Project Settings → Database → Connect)
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5433/backend-db?schema=public"
+DATABASE_URL="postgresql://postgres:your-password@db.your-project-ref.supabase.co:5432/postgres?schema=public"
+DIRECT_URL="postgresql://postgres:your-password@db.your-project-ref.supabase.co:5432/postgres?schema=public"
 PORT=3001
 JWT_SECRET=replace-with-a-long-random-string
 # Only needed if you run prisma/importGooglePlaces.js:
 GOOGLE_PLACES_API_KEY=your-google-places-api-key
 ```
+
+If your Supabase project exposes a separate transaction pooler URI, use that for `DATABASE_URL` and keep the direct connection URI for `DIRECT_URL` (Prisma migrations need the non-pooled connection). If you only have the direct connection URI, it's fine to use the same value for both. Any special characters in your password (like `@`) must be percent-encoded (`@` → `%40`).
 
 The frontend also has its own `.env` (copy `apps/frontend/.env.example`):
 
@@ -142,13 +143,12 @@ VITE_GOOGLE_MAPS_API_KEY=your-google-maps-javascript-api-key
 
 ## How to create the PostgreSQL database
 
-From `apps/backend`:
+Create a project at [supabase.com](https://supabase.com), then copy its connection string(s) into `apps/backend/.env` as shown above. Once `.env` is configured, push the schema from `apps/backend`:
 
 ```bash
-npm run db:up
+npm run prisma:generate
+npx prisma db push
 ```
-
-This starts the PostgreSQL container defined in the root `docker-compose.yml`. To stop it: `npm run db:down`. To view logs: `npm run db:logs`.
 
 ## Installation
 
@@ -163,9 +163,9 @@ cd full-stack-template
 cd apps/backend
 npm install
 cp .env.example .env
-npm run db:up
+# fill in .env with your Supabase connection strings, then:
 npm run prisma:generate
-npm run prisma:migrate -- --name init
+npx prisma db push
 npm run db:seed
 npm run dev
 ```
@@ -237,13 +237,14 @@ To bulk-import real shop data or run a one-off data migration in production (whe
 *(Fill this section in yourself before submitting — it should describe your own experience working on this project, not be generated for you.)*
 
 - **How did you use AI?**
-I used AI to help with the more menial work of applying changes and adjusting small design tweaks. I also used it to help explain more complicated aspects that we may not have touched on or things I wouldn't want to build myself because it would take too much time. 
-- **What did AI help you understand?It helped me with attaching the backend and front end as far as deployment. It also gave me good advice on certain design or alignment aspects. 
+I used AI to help with the more menial work of applying changes and adjusting small design tweaks. I also used it to help explain more complicated aspects that we may not have touched on or things I wasn't remembering in the moment. I have found AI extremely helpful as an assistant in these ways and it helps the work go more smoothely and quickly. 
+- **What did AI help you understand? 
+It helped walk me through the more complicated and exact parts of  attaching the backend and getting both deployed. It also gave me some good advice on certain design or alignment aspects. 
 - **What incorrect or incomplete AI response did you encounter?
-There was a problem with a card animation on the page not working and AI kept assuming it was a browser cache issue, but it ended up being just a simple error in the code it had written in making some of the changes. Once this was pointed out, it did correct it. 
+There was a problem with the shop card's pop growing animation on hover not working and AI kept assuming it was a browser cache issue, as we had run in to that problem very recently, but it ended up being just a simple error: in the .shop_card tag under animation, it for some reason had "ease both" instead of just "ease" which overrode the .shop_card: hover transform rule. Once this was pointed out, it did correct it. 
 There was also an instance where I added a picture for the background to the folder and the AI suggested shrinking it to a JPEG because it would be smaller and tax the graphics less, but when it changed it, everything ran worse. It had actually been fine before. It offered a few options for fixes but I knew that PNG's can work better with graphics in a way so I had it change the photo back to a PNG. 
 - **How did you test the AI-generated code?
 Through the localhost browser port. Visuals are a very helpful way to tell that something isn't working, as well as clicking through the site/app in different scenarios and size/device changes. 
 - **What part of the project can you explain without AI assistance?
-Mostly the CSS side of things as well as the functions where it entails error messages. I can explain the calling of components within App.jsx. I can explain the vercel.json which was added to aid in the deployment of the front end. 
+Mostly the CSS style and animation rules and compromises. I can explain the error messages. I can explain the calling of components within App.jsx. I can mostly explain the process in deploying the front end and backend on vercel and connecting them.  
 
