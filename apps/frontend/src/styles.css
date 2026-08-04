@@ -955,6 +955,30 @@ button:active {
   padding: 7px 4px;
 }
 
+.random-shop-btn {
+  display: block;
+  margin: 14px 0 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.15s ease;
+}
+
+.random-shop-btn:hover:not(:disabled) {
+  box-shadow: var(--shadow-glow);
+}
+
+.random-shop-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .near-me .status {
   flex-basis: 100%;
   margin: 0;

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchShops } from "../api/shops.js";
 import { geocodeAddress } from "../api/geocode.js";
 import { addFavorite, fetchFavorites, removeFavorite, setVisited as setVisitedApi } from "../api/favorites.js";
@@ -14,6 +15,7 @@ import VisitedToggle from "../components/VisitedToggle.jsx";
 
 export default function HomePage() {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [shops, setShops] = useState([]);
   const [filters, setFilters] = useState({ search: "", city: "", state: "", sort: "name" });
   const [loading, setLoading] = useState(true);
@@ -228,6 +230,14 @@ export default function HomePage() {
       ? [...radiusFilteredShops].sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
       : radiusFilteredShops;
 
+  function handleRandomShop() {
+    if (displayedShops.length === 0) {
+      return;
+    }
+    const shop = displayedShops[Math.floor(Math.random() * displayedShops.length)];
+    navigate(`/shops/${shop.id}`);
+  }
+
 
   return (
     <>
@@ -254,6 +264,8 @@ export default function HomePage() {
               hasLocation={Boolean(userLocation)}
               radiusMiles={radiusMiles}
               onRadiusChange={setRadiusMiles}
+              onRandomShop={handleRandomShop}
+              randomShopDisabled={displayedShops.length === 0}
             />
           </div>
         </div>

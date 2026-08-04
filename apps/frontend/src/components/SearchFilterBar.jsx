@@ -11,7 +11,9 @@ export default function SearchFilterBar({
   onClearLocation,
   hasLocation,
   radiusMiles,
-  onRadiusChange
+  onRadiusChange,
+  onRandomShop,
+  randomShopDisabled
 }) {
   const [nearAddress, setNearAddress] = useState("");
   const [showLocationPopup, setShowLocationPopup] = useState(false);
@@ -131,6 +133,15 @@ export default function SearchFilterBar({
           </select>
         </label>
       </form>
+
+      <button
+        type="button"
+        className="random-shop-btn"
+        onClick={onRandomShop}
+        disabled={randomShopDisabled}
+      >
+        🎲 Surprise me
+      </button>
     </>
   );
 }
