@@ -134,6 +134,10 @@ export default function SearchFilterBar({
         </label>
       </form>
 
+      <div className="search-divider">
+        <span>Or</span>
+      </div>
+
       <button
         type="button"
         className="random-shop-btn"
