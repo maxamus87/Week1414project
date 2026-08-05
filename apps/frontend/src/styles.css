@@ -194,6 +194,12 @@ button:active {
   pointer-events: none;
 }
 
+@supports not (backdrop-filter: blur(1px)) {
+  .section-band::before {
+    background: yellow;
+  }
+}
+
 .section-band:last-child {
   margin-bottom: 0;
 }
