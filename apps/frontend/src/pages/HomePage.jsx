@@ -297,7 +297,7 @@ export default function HomePage() {
       ) : null}
 
       {!loading && !error ? (
-        <section className="section-band">
+        <section className="section-band section-band--full">
           <div className="section-band__inner">
             <ShopCarousel shops={displayedShops} renderExtra={renderShopExtra} />
           </div>
