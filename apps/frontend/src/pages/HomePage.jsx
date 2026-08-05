@@ -242,7 +242,7 @@ export default function HomePage() {
   return (
     <>
       <section className="section-band section-band--flush">
-        <div className="section-band__inner section-band__inner--center section-band__inner--pad-top-xs section-band__inner--pad-bottom-xs">
+        <div className="section-band__inner section-band__inner--center section-band__inner--pad-top-xs section-band__inner--tight-bottom">
           <div className="home-hero-solo">
             <h1>Find your local coffee shop</h1>
             <p>Search, filter, and rate independent coffee shops near you.</p>
@@ -255,7 +255,7 @@ export default function HomePage() {
       </section>
 
       <section className="section-band">
-        <div className="section-band__inner">
+        <div className="section-band__inner section-band__inner--tight-top">
           <SearchFilterBar
             filters={filters}
             onChange={setFilters}
