@@ -238,6 +238,10 @@ button:active {
   border: 3px solid var(--color-accent);
 }
 
+.map-band {
+  padding: 36px 0 28px;
+}
+
 .shop-carousel__viewport {
   overflow: hidden;
   padding: 32px 0;
