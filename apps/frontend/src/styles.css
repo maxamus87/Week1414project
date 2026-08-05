@@ -37,6 +37,7 @@ body {
   background: url("./assets/coffee-hero.png");
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
   background-repeat: no-repeat;
   min-height: 100vh;
 }
@@ -118,7 +119,7 @@ button:active {
   margin-bottom: 24px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  animation: fade-in-up 0.35s ease both;
+  animation: fade-in 0.35s ease both;
 }
 
 .panel--section-opacity {
@@ -144,6 +145,24 @@ button:active {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Opacity-only fade, used on elements that need backdrop-filter to keep
+   working: an animated transform (even after it finishes, since
+   animation-fill-mode holds the ending value) promotes the element to
+   its own compositing layer and breaks backdrop-filter's ability to
+   sample content from outside that layer. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page-transition {
+  animation: fade-in 0.3s ease both;
 }
 
 .icon-pop {
@@ -174,9 +193,10 @@ button:active {
   position: relative;
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  background: rgba(45, 42, 39, 0.12);
+  background: rgba(45, 42, 39, 0.42);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   margin-bottom: 32px;
+  animation: fade-in 0.35s ease both;
 }
 
 .section-band::before {
